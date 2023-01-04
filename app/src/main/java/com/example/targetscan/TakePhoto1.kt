@@ -37,9 +37,10 @@ class TakePhoto1 : AppCompatActivity() {
         val year =intent.getIntExtra("year",2023)
         val month = intent.getIntExtra("month",1)
         val day = intent.getIntExtra("day",1)
+        val comment = intent.getStringExtra("comment")
         binding.info1.text="Discipline: ${myDateList.get(index)}"
         binding.info2.text="Date: $year.$month.$day"
-        binding.info3.text = "Comment: "
+        binding.info3.text = "Comment: $comment"
         binding.takePhotoBtn.setOnClickListener {
             outputImage = File(externalCacheDir,"output_image.jpg")
             Log.d("wu",externalCacheDir.toString())

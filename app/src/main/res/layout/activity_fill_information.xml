@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/disciplineWrap"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar3"
         app:layout_constraintBottom_toTopOf="@id/dateWrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -51,7 +51,7 @@
         android:id="@+id/dateWrap"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/disciplineWrap"
-        app:layout_constraintBottom_toTopOf="@+id/buttonWrap"
+        app:layout_constraintBottom_toTopOf="@+id/commentWrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -83,9 +83,41 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonWrap"
+        android:id="@+id/commentWrap"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/dateWrap"
+        app:layout_constraintBottom_toTopOf="@id/buttonWrap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/commentText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/commentInput"
+            android:text="Comment:"
+            />
+
+        <EditText
+            android:id="@+id/commentInput"
+            android:layout_width="280dp"
+            android:layout_height="120dp"
+            android:inputType="textMultiLine"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/commentText"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonWrap"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/commentWrap"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

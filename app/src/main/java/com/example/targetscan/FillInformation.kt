@@ -32,11 +32,14 @@ class FillInformation : AppCompatActivity() {
             val year = binding.dateInput.year
             val month = binding.dateInput.month+1
             val day = binding.dateInput.dayOfMonth
+            val comment = binding.commentInput.text.toString()
+
             intent = Intent(this,TakePhoto1::class.java)
             intent.putExtra("index", selectedIndex)
             intent.putExtra("year", year)
             intent.putExtra("month", month)
             intent.putExtra("day", day)
+            intent.putExtra("comment",comment.trim())
             Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
             startActivity(intent)
             finish()
