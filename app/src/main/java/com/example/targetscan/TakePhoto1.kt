@@ -1,6 +1,7 @@
 package com.example.targetscan
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,6 +18,8 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.example.targetscan.databinding.ActivityTakePhoto1Binding
 import java.io.File
+import java.time.LocalDate
+import java.time.Month
 
 class TakePhoto1 : AppCompatActivity() {
     lateinit var binding: ActivityTakePhoto1Binding
@@ -24,13 +27,45 @@ class TakePhoto1 : AppCompatActivity() {
     lateinit var imageUri : Uri
     lateinit var outputImage: File
     lateinit var myDateList:MutableList<String>
+    var nextID=1
+
+    private fun dateFormat(year:Int, month: Int, day:Int):String{
+        var m = if (month in 1..9){
+            "0$month"
+        } else{
+            "$month"
+        }
+        var d = if (day in 1..9){
+            "0$day"
+        } else{
+            "$day"
+        }
+        return "$year-${m}-${d}"
+    }
+
+    private fun int2ThreeDigits(number:Int):String{
+        return when (number) {
+            in 1..9 -> {
+                "00$number"
+            }
+            in 10..99 -> {
+                "0$number"
+            }
+            in 100..999 -> {
+                "$number"
+            }
+            else -> {
+                "000"
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTakePhoto1Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar2)
-        getSupportActionBar()?.setTitle("Add new record");
+        supportActionBar?.title = "Add new record";
 
         myDateList = mutableListOf<String>("Rifle shoot","Test")
         val index = intent.getIntExtra("index",0)
@@ -38,12 +73,20 @@ class TakePhoto1 : AppCompatActivity() {
         val month = intent.getIntExtra("month",1)
         val day = intent.getIntExtra("day",1)
         val comment = intent.getStringExtra("comment")
-        binding.info1.text="Discipline: ${myDateList.get(index)}"
+        binding.info1.text="Discipline: ${myDateList[index]}"
         binding.info2.text="Date: $year.$month.$day"
         binding.info3.text = "Comment: $comment"
+        val concatDate = "$index${dateFormat(year,month,day)}"
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        val editor = access.edit()
+        var totalNum = access.getInt("totalNum",-1)
+
+        while (access.getString("$concatDate${int2ThreeDigits(nextID)}.jpg","404")!="404"){
+            nextID+=1
+        }
+
         binding.takePhotoBtn.setOnClickListener {
-            outputImage = File(externalCacheDir,"output_image.jpg")
-            Log.d("wu",externalCacheDir.toString())
+            outputImage = File(externalCacheDir,"$index${dateFormat(year,month,day)}${int2ThreeDigits(nextID)}.jpg")
             if (outputImage.exists()){
                 outputImage.delete()
             }
@@ -59,7 +102,24 @@ class TakePhoto1 : AppCompatActivity() {
         }
 
         binding.cancelPhotoBtn.setOnClickListener {
-
+            outputImage = File(externalCacheDir,"$index${dateFormat(year,month,day)}${nextID-1}.jpg")
+            if (outputImage.exists()){
+                outputImage.delete()
+            }
+            val intent = Intent(this,FillInformation::class.java)
+            intent.putExtra("index", index)
+            intent.putExtra("year", year)
+            intent.putExtra("month", month)
+            intent.putExtra("day", day)
+            intent.putExtra("comment",comment)
+            startActivity(intent)
+            finish()
+        }
+        binding.confirmPhotoBtn.setOnClickListener {
+            editor.putString("$index${dateFormat(year,month,day)}${int2ThreeDigits(nextID)}.jpg","NotYetProcessed")
+            totalNum+=1
+            editor.putInt("totalNum",totalNum)
+            editor.apply()
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
             finish()

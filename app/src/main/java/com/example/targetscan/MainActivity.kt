@@ -2,8 +2,10 @@ package com.example.targetscan
 
 import android.R.attr.left
 import android.R.attr.right
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
@@ -12,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.targetscan.databinding.ActivityMainBinding
+import java.io.File
+import java.time.LocalDate
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
+
             R.id.settings -> Toast.makeText(this, "You click settings, TODO", Toast.LENGTH_SHORT).show()
         }
         return true
@@ -40,8 +45,31 @@ class MainActivity : AppCompatActivity() {
 //        binding.toolbar.layoutParams = params;
         setSupportActionBar(binding.toolbar)
 
-        getSupportActionBar()?.setTitle("Shooting Records");
+        supportActionBar?.title = "Shooting Records";
 
+
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        val editor = access.edit()
+
+        if (!access.contains("todayNum") ||!access.contains("totalNum") || !access.contains("lastEditDate")){
+            editor.putInt("totalNum",0)
+            editor.apply()
+        }
+        var totalNum = access.getInt("totalNum",-1)
+
+        var photoList = externalCacheDir?.list()
+        var photoCorr = mutableMapOf<String,String>()
+        if (photoList.isNullOrEmpty()){
+            photoList = arrayOf<String>()
+        }
+        else{
+            for (photo in photoList){
+                photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
+                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
+            }
+        }
+
+//        Log.d("wu", externalCacheDir?.list()?.get().toString())
         repeat(20){
             shootList.add(ShootRecord("test", androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
         }

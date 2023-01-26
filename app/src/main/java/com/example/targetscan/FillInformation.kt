@@ -1,13 +1,16 @@
 package com.example.targetscan
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.targetscan.databinding.ActivityFillInformationBinding
+import java.io.File
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
@@ -16,17 +19,61 @@ private var selectedIndex:Int = 0
 class FillInformation : AppCompatActivity() {
     lateinit var binding:ActivityFillInformationBinding
     lateinit var myDateList:MutableList<String>
+    lateinit var outputImage: File
+    var nextID=1
 
+    private fun dateFormat(year:Int, month: Int, day:Int):String{
+        var m = if (month in 1..9){
+            "0$month"
+        } else{
+            "$month"
+        }
+        var d = if (day in 1..9){
+            "0$day"
+        } else{
+            "$day"
+        }
+        return "$year-${m}-${d}"
+    }
+
+    private fun removeEmptyPhoto(index:Int,year:Int, month: Int, day:Int){
+        val concatDate = "$index{dateFormat(year,month,day)}"
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+
+        var photoList = externalCacheDir?.list()
+        if (photoList.isNullOrEmpty()){
+            return
+        }
+        else{
+            for (photo in photoList){
+                if (!access.contains(photo)){
+                    outputImage = File(externalCacheDir,photo)
+                    if (outputImage.exists()){
+                        outputImage.delete()
+                    }
+                }
+            }
+        }
+        return
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFillInformationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar3)
 
-        getSupportActionBar()?.setTitle("Entering information");
+        //restart Parameter
+        val index = intent.getIntExtra("index",0)
+        val year =intent.getIntExtra("year",1111)
+        val month = intent.getIntExtra("month",1)
+        val day = intent.getIntExtra("day",1)
+        val comment = intent.getStringExtra("comment")
+        binding.commentInput.setText(comment)
+
+        supportActionBar?.title = "Entering information";
         myDateList = mutableListOf<String>("Rifle shoot","Test")
-        initSpinner()
-        initDateSelector()
+        initSpinner(index)
+        initDateSelector(year,month-1,day)
 
         binding.confirmBtn.setOnClickListener {
             val year = binding.dateInput.year
@@ -34,6 +81,7 @@ class FillInformation : AppCompatActivity() {
             val day = binding.dateInput.dayOfMonth
             val comment = binding.commentInput.text.toString()
 
+            removeEmptyPhoto(selectedIndex,year,month,day)
             intent = Intent(this,TakePhoto1::class.java)
             intent.putExtra("index", selectedIndex)
             intent.putExtra("year", year)
@@ -45,26 +93,33 @@ class FillInformation : AppCompatActivity() {
             finish()
         }
         binding.cancelBtn.setOnClickListener {
+            val year = binding.dateInput.year
+            val month = binding.dateInput.month+1
+            val day = binding.dateInput.dayOfMonth
+            removeEmptyPhoto(selectedIndex,year,month,day)
+
             intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
-     private fun initDateSelector(){
+     private fun initDateSelector(year:Int,month:Int,day:Int){
          val c = Calendar.getInstance()
          c.set(2020,0,1)
          binding.dateInput.minDate= c.timeInMillis
          binding.dateInput.maxDate=Date().time
-
+         if (year!=1111) {
+             binding.dateInput.updateDate(year, month, day)
+         }
      }
 
-    private fun initSpinner(){
+    private fun initSpinner(index:Int){
         var starAdapter = ArrayAdapter<String>(this,R.layout.item_select,myDateList)
         starAdapter.setDropDownViewResource(R.layout.item_dropdown)
         var sp = binding.disciplineSelect
         sp.prompt="choose a discipline"
         sp.adapter=starAdapter
-        sp.setSelection(0)
+        sp.setSelection(index)
         sp.onItemSelectedListener=MySelectedListener()
     }
 
