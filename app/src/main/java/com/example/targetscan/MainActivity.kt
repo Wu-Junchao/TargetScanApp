@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-
             R.id.settings -> Toast.makeText(this, "You click settings, TODO", Toast.LENGTH_SHORT).show()
         }
         return true
@@ -47,16 +46,17 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Shooting Records";
 
-
+        // Initialize shared preference XML
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         val editor = access.edit()
 
-        if (!access.contains("todayNum") ||!access.contains("totalNum") || !access.contains("lastEditDate")){
+        if (!access.contains("totalNum") ){
             editor.putInt("totalNum",0)
             editor.apply()
         }
         var totalNum = access.getInt("totalNum",-1)
 
+        // Read all images name
         var photoList = externalCacheDir?.list()
         var photoCorr = mutableMapOf<String,String>()
         if (photoList.isNullOrEmpty()){
@@ -65,24 +65,32 @@ class MainActivity : AppCompatActivity() {
         else{
             for (photo in photoList){
                 photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
-                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
+//                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
             }
         }
 
 //        Log.d("wu", externalCacheDir?.list()?.get().toString())
-        repeat(20){
-            shootList.add(ShootRecord("test", androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
+        for (i in 0 until totalNum){
+            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
         }
         val layoutManager = LinearLayoutManager(this)
         binding.shootingHistory.layoutManager = layoutManager
         val adapter = ShootRecordAdapter(shootList)
         binding.shootingHistory.adapter = adapter
 
+        initializeDatabase()
+
         binding.fab.setOnClickListener{
             val intent = Intent(this,FillInformation::class.java)
             startActivity(intent)
         }
     }
+
+    private fun initializeDatabase(){
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
+        dbHelper.writableDatabase
+    }
+
     fun getStatusBarHeight(): Int {
         var result = 0
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")

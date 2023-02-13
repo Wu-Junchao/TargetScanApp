@@ -80,17 +80,21 @@ class FillInformation : AppCompatActivity() {
             val month = binding.dateInput.month+1
             val day = binding.dateInput.dayOfMonth
             val comment = binding.commentInput.text.toString()
-
             removeEmptyPhoto(selectedIndex,year,month,day)
-            intent = Intent(this,TakePhoto1::class.java)
-            intent.putExtra("index", selectedIndex)
-            intent.putExtra("year", year)
-            intent.putExtra("month", month)
-            intent.putExtra("day", day)
-            intent.putExtra("comment",comment.trim())
-            Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
-            startActivity(intent)
-            finish()
+            if (comment.length>250){
+                Toast.makeText(this, "Comment length exceeds 250 chars.", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                intent = Intent(this,TakePhoto1::class.java)
+                intent.putExtra("index", selectedIndex)
+                intent.putExtra("year", year)
+                intent.putExtra("month", month)
+                intent.putExtra("day", day)
+                intent.putExtra("comment",comment.trim())
+                Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
+                startActivity(intent)
+                finish()
+            }
         }
         binding.cancelBtn.setOnClickListener {
             val year = binding.dateInput.year

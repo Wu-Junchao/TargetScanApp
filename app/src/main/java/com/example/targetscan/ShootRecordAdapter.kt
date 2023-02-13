@@ -28,6 +28,7 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
             Toast.makeText(parent.context, "You click num ${position}", Toast.LENGTH_SHORT).show()
             val intent = Intent(parent.context,RecordDetail::class.java)
             intent.putExtra("position",position)
+            intent.putExtra("name",shootRecord.name)
             parent.context.startActivity(intent)
 
         }

@@ -115,12 +115,19 @@ class TakePhoto1 : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
         binding.confirmPhotoBtn.setOnClickListener {
             editor.putString("$index${dateFormat(year,month,day)}${int2ThreeDigits(nextID)}.jpg","NotYetProcessed")
             totalNum+=1
             editor.putInt("totalNum",totalNum)
             editor.apply()
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,PhotoProcess::class.java)
+            intent.putExtra("index", index)
+            intent.putExtra("year", year)
+            intent.putExtra("month", month)
+            intent.putExtra("day", day)
+            intent.putExtra("comment",comment)
+            intent.putExtra("ImgName","$index${dateFormat(year,month,day)}${int2ThreeDigits(nextID)}.jpg")
             startActivity(intent)
             finish()
         }

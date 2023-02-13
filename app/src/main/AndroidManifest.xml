@@ -13,6 +13,13 @@
         android:theme="@style/Theme.TargetScan"
         tools:targetApi="31">
         <activity
+            android:name=".PhotoProcess"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".FillInformation"
             android:exported="false">
             <meta-data
