@@ -14,26 +14,50 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/image_detail"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_recordDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
-        android:id="@+id/shootID"
-        android:layout_width="wrap_content"
+        android:id="@+id/InformationCollect"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="149dp"
-        android:text="TextView"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:text="Discipline:\nDate:\nID:\nComment:"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintBottom_toTopOf="@id/ScoreCollect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/image_detail" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ScoreCollect"
+        android:textSize="20dp"
+        android:text="Score"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/InformationCollect"
+        app:layout_constraintBottom_toTopOf="@id/backButton"/>
+
+
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="176dp"
-        android:text="Button"
+        android:text="Back"
+        app:layout_constraintTop_toBottomOf="@id/ScoreCollect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

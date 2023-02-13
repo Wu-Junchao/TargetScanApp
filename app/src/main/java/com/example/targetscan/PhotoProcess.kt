@@ -55,6 +55,7 @@ class PhotoProcess : AppCompatActivity() {
         else{
             val intent = Intent(this,FillInformation::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.confirmEditedResult.setOnClickListener {

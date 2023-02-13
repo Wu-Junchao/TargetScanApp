@@ -26,7 +26,7 @@ class TakePhoto1 : AppCompatActivity() {
     val takePhoto =1
     lateinit var imageUri : Uri
     lateinit var outputImage: File
-    lateinit var myDateList:MutableList<String>
+    lateinit var discplineList:MutableList<String>
     var nextID=1
 
     private fun dateFormat(year:Int, month: Int, day:Int):String{
@@ -67,13 +67,13 @@ class TakePhoto1 : AppCompatActivity() {
         setSupportActionBar(binding.toolbar2)
         supportActionBar?.title = "Add new record";
 
-        myDateList = mutableListOf<String>("Rifle shoot","Test")
+        discplineList = mutableListOf<String>("Rifle shoot","Test")
         val index = intent.getIntExtra("index",0)
         val year =intent.getIntExtra("year",2023)
         val month = intent.getIntExtra("month",1)
         val day = intent.getIntExtra("day",1)
         val comment = intent.getStringExtra("comment")
-        binding.info1.text="Discipline: ${myDateList[index]}"
+        binding.info1.text="Discipline: ${discplineList[index]}"
         binding.info2.text="Date: $year.$month.$day"
         binding.info3.text = "Comment: $comment"
         val concatDate = "$index${dateFormat(year,month,day)}"
