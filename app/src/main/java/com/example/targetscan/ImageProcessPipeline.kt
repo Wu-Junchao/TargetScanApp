@@ -16,6 +16,7 @@ class ImageProcessPipeline (private val originalImg:Bitmap, val targetNum:Int){
     init {
         if (OpenCVLoader.initDebug()){
             Utils.bitmapToMat(originalImg,originalImgMat)
+            preProcess()
         }
         else{
             Log.d("wu","Failed to configure Opencv.")

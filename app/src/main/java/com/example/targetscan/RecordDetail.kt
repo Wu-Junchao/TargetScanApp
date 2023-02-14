@@ -21,8 +21,10 @@ class RecordDetail : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val imgName = intent.getStringExtra("name")
+        val imgProcessLabel = intent.getStringExtra("processLabel")
         binding = ActivityRocordDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         setSupportActionBar(binding.toolbarRecordDetail)
         supportActionBar?.title = "Record Details";
@@ -43,7 +45,12 @@ class RecordDetail : AppCompatActivity() {
         }
 
         if (imgName != null) {
-            displayData(imgName)
+            if (imgProcessLabel!="Processed"){
+                binding.InformationCollect.text="Not yet processed"
+            }
+            else {
+                displayData(imgName)
+            }
         }
 
         binding.backButton.setOnClickListener{

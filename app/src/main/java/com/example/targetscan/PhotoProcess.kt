@@ -10,10 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
+import androidx.core.view.isVisible
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
@@ -52,6 +55,7 @@ class PhotoProcess : AppCompatActivity() {
         setSupportActionBar(binding.toolbarPhotoProcess)
         supportActionBar?.title = "Photo Process";
 
+
         outputImage = File(externalCacheDir,imgName)
         if (outputImage.exists()){
             imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
@@ -66,23 +70,37 @@ class PhotoProcess : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
-        if (OpenCVLoader.initDebug()){
-            val inputStream = contentResolver.openInputStream(imageUri)
-            var originalImg = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
-
-            image = ImageProcessPipeline(originalImg,5)
-            image.preProcess()
-            binding.imageViewProcess.setImageBitmap(image.returnImg())
-            Log.d("wu","successfully")
-        }
-        else{
-            Log.d("wu","failed to configure opencv")
-        }
-
+        binding.allScoreWrap.visibility=INVISIBLE
         binding.confirmEditedResult.setOnClickListener {
-            confirmResult()
+
+            if (binding.allScoreWrap.visibility == INVISIBLE){
+                if (binding.targetNumInput.text.isNotBlank() && binding.targetNumInput.text.toString().toInt() in 1..10){
+                    targetNum=binding.targetNumInput.text.toString().toInt()
+                    binding.confirmEditedResult.text="Waiting..."
+                    // Start process
+                    if (OpenCVLoader.initDebug()){
+                        val inputStream = contentResolver.openInputStream(imageUri)
+                        var originalImg = BitmapFactory.decodeStream(inputStream)
+                        inputStream?.close()
+
+                        image = ImageProcessPipeline(originalImg,targetNum)
+                        binding.imageViewProcess.setImageBitmap(image.returnImg())
+                        Log.d("wu","successfully")
+                    }
+                    else{
+                        Log.d("wu","failed to configure opencv")
+                    }
+                    binding.allScoreWrap.visibility= VISIBLE
+
+                    binding.confirmEditedResult.text="confirm"
+                }
+                else{
+                    Toast.makeText(this, "The number of targets should between 1 and 10.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else{
+                confirmResult()
+            }
         }
     }
 
@@ -90,6 +108,11 @@ class PhotoProcess : AppCompatActivity() {
         var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
 
         for (i in 0 until targetNum){
+            if (scoreTextList[i].text.isBlank()){
+                Toast.makeText(this, "Position ${i+1}'s score is blank.", Toast.LENGTH_SHORT).show()
+                scoreList = arrayOf<Int>()
+                return
+            }
             var score=scoreTextList[i].text.toString().toInt()
 //            Log.d("wu",score.toString())
             if (score in 0..10){

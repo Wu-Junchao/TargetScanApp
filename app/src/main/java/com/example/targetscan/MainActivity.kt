@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
 //        Log.d("wu", externalCacheDir?.list()?.get().toString())
         for (i in 0 until totalNum){
-            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
+            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
         }
         val layoutManager = LinearLayoutManager(this)
         binding.shootingHistory.layoutManager = layoutManager
