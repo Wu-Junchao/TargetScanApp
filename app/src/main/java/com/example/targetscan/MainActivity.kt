@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.targetscan.databinding.ActivityMainBinding
+import org.opencv.android.OpenCVLoader
+import org.opencv.imgcodecs.Imgcodecs
+import org.opencv.imgproc.Imgproc
 import java.io.File
 import java.time.LocalDate
 
@@ -68,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 //                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
             }
         }
+
 
 //        Log.d("wu", externalCacheDir?.list()?.get().toString())
         for (i in 0 until totalNum){

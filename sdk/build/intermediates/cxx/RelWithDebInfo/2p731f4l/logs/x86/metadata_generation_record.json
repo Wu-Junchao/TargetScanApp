@@ -1,0 +1,170 @@
+[
+  {
+    "level_": 0,
+    "message_": "Start JSON generation. Platform version: 28 min SDK version: x86",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 1974838353
+  },
+  {
+    "level_": 0,
+    "message_": "rebuilding JSON /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86/android_gradle_build.json due to:",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -1588581157
+  },
+  {
+    "level_": 0,
+    "message_": "- expected json /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86/android_gradle_build.json file is not present, will remove stale json folder",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 511811253
+  },
+  {
+    "level_": 0,
+    "message_": "- missing previous command file /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86/metadata_generation_command.txt, will remove stale json folder",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -2141289005
+  },
+  {
+    "level_": 0,
+    "message_": "- command changed from previous, will remove stale json folder",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -897520192
+  },
+  {
+    "level_": 0,
+    "message_": "created folder \u0027/Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86\u0027",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 2134751322
+  },
+  {
+    "level_": 0,
+    "message_": "executing cmake /Users/wu/Library/Android/sdk/cmake/3.18.1/bin/cmake \\\n  -H/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper \\\n  -DCMAKE_SYSTEM_NAME\u003dAndroid \\\n  -DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON \\\n  -DCMAKE_SYSTEM_VERSION\u003d28 \\\n  -DANDROID_PLATFORM\u003dandroid-28 \\\n  -DANDROID_ABI\u003dx86 \\\n  -DCMAKE_ANDROID_ARCH_ABI\u003dx86 \\\n  -DANDROID_NDK\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620 \\\n  -DCMAKE_ANDROID_NDK\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620 \\\n  -DCMAKE_TOOLCHAIN_FILE\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620/build/cmake/android.toolchain.cmake \\\n  -DCMAKE_MAKE_PROGRAM\u003d/Users/wu/Library/Android/sdk/cmake/3.18.1/bin/ninja \\\n  -DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/Users/wu/AndroidStudioProjects/TargetScan/sdk/build/intermediates/cxx/RelWithDebInfo/2p731f4l/obj/x86 \\\n  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003d/Users/wu/AndroidStudioProjects/TargetScan/sdk/build/intermediates/cxx/RelWithDebInfo/2p731f4l/obj/x86 \\\n  -DCMAKE_BUILD_TYPE\u003dRelWithDebInfo \\\n  -B/Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86 \\\n  -GNinja \\\n  -DANDROID_STL\u003dc++_shared\n",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -1296946648
+  },
+  {
+    "level_": 0,
+    "message_": "/Users/wu/Library/Android/sdk/cmake/3.18.1/bin/cmake \\\n  -H/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper \\\n  -DCMAKE_SYSTEM_NAME\u003dAndroid \\\n  -DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON \\\n  -DCMAKE_SYSTEM_VERSION\u003d28 \\\n  -DANDROID_PLATFORM\u003dandroid-28 \\\n  -DANDROID_ABI\u003dx86 \\\n  -DCMAKE_ANDROID_ARCH_ABI\u003dx86 \\\n  -DANDROID_NDK\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620 \\\n  -DCMAKE_ANDROID_NDK\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620 \\\n  -DCMAKE_TOOLCHAIN_FILE\u003d/Users/wu/Library/Android/sdk/ndk/23.1.7779620/build/cmake/android.toolchain.cmake \\\n  -DCMAKE_MAKE_PROGRAM\u003d/Users/wu/Library/Android/sdk/cmake/3.18.1/bin/ninja \\\n  -DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/Users/wu/AndroidStudioProjects/TargetScan/sdk/build/intermediates/cxx/RelWithDebInfo/2p731f4l/obj/x86 \\\n  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003d/Users/wu/AndroidStudioProjects/TargetScan/sdk/build/intermediates/cxx/RelWithDebInfo/2p731f4l/obj/x86 \\\n  -DCMAKE_BUILD_TYPE\u003dRelWithDebInfo \\\n  -B/Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86 \\\n  -GNinja \\\n  -DANDROID_STL\u003dc++_shared\n",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 323540297
+  },
+  {
+    "level_": 0,
+    "message_": "Exiting generation of /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86/compile_commands.json.bin normally",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -531288481
+  },
+  {
+    "level_": 0,
+    "message_": "done executing cmake",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": -1209866443
+  },
+  {
+    "level_": 0,
+    "message_": "write command file /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/RelWithDebInfo/2p731f4l/x86/metadata_generation_command.txt",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 495985871
+  },
+  {
+    "level_": 0,
+    "message_": "JSON generation completed without problems",
+    "file_": "/Users/wu/AndroidStudioProjects/TargetScan/sdk/libcxx_helper/CMakeLists.txt",
+    "tag_": "release|x86",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 728206641
+  }
+]

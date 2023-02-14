@@ -2,16 +2,24 @@ package com.example.targetscan
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.media.Image
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
+import org.opencv.android.OpenCVLoader
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.imgcodecs.Imgcodecs
+import org.opencv.imgproc.Imgproc
 import java.io.File
 import java.time.Month
 
@@ -27,6 +35,7 @@ class PhotoProcess : AppCompatActivity() {
     private var imgName :String? = null
     private var targetNum =10
     private var scoreList = arrayOf<Int>()
+    lateinit private var image :ImageProcessPipeline
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +67,20 @@ class PhotoProcess : AppCompatActivity() {
             finish()
         }
 
+        if (OpenCVLoader.initDebug()){
+            val inputStream = contentResolver.openInputStream(imageUri)
+            var originalImg = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            image = ImageProcessPipeline(originalImg,5)
+            image.preProcess()
+            binding.imageViewProcess.setImageBitmap(image.returnImg())
+            Log.d("wu","successfully")
+        }
+        else{
+            Log.d("wu","failed to configure opencv")
+        }
+
         binding.confirmEditedResult.setOnClickListener {
             confirmResult()
         }
@@ -84,6 +107,7 @@ class PhotoProcess : AppCompatActivity() {
 
         val intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     private fun list2Str(scoreList: Array<Int>):String{
