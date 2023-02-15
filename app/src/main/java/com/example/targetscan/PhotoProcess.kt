@@ -63,7 +63,10 @@ class PhotoProcess : AppCompatActivity() {
             }else{
                 Uri.fromFile(outputImage)
             }
-            binding.imageViewProcess.setImageURI(imageUri)
+            val inputStream = contentResolver.openInputStream(imageUri)
+            var originalImg = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+            binding.imageViewProcess.setImageBitmap(originalImg)
         }
         else{
             val intent = Intent(this,FillInformation::class.java)
@@ -72,18 +75,17 @@ class PhotoProcess : AppCompatActivity() {
         }
         binding.allScoreWrap.visibility=INVISIBLE
         binding.confirmEditedResult.setOnClickListener {
-
             if (binding.allScoreWrap.visibility == INVISIBLE){
                 if (binding.targetNumInput.text.isNotBlank() && binding.targetNumInput.text.toString().toInt() in 1..10){
                     targetNum=binding.targetNumInput.text.toString().toInt()
                     binding.confirmEditedResult.text="Waiting..."
                     // Start process
                     if (OpenCVLoader.initDebug()){
-                        val inputStream = contentResolver.openInputStream(imageUri)
-                        var originalImg = BitmapFactory.decodeStream(inputStream)
-                        inputStream?.close()
+                        val inputStream2 = contentResolver.openInputStream(imageUri)
+                        var originalImg2 = BitmapFactory.decodeStream(inputStream2)
+                        inputStream2?.close()
 
-                        image = ImageProcessPipeline(originalImg,targetNum)
+                        image = ImageProcessPipeline(originalImg2,targetNum)
                         binding.imageViewProcess.setImageBitmap(image.returnImg())
                         Log.d("wu","successfully")
                     }

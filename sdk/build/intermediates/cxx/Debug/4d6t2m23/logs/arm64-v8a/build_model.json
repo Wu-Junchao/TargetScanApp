@@ -126,7 +126,7 @@
         "rootBuildGradleFolder": "/Users/wu/AndroidStudioProjects/TargetScan",
         "sdkFolder": "/Users/wu/Library/Android/sdk",
         "isBuildOnlyTargetAbiEnabled": true,
-        "ideBuildTargetAbi": "arm64-v8a",
+        "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
         "isCmakeBuildCohabitationEnabled": false,
         "isPrefabEnabled": false
       },
