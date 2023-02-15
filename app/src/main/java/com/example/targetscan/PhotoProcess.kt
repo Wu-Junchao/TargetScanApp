@@ -16,7 +16,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
+import androidx.core.graphics.rotationMatrix
 import androidx.core.view.isVisible
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
@@ -79,19 +82,24 @@ class PhotoProcess : AppCompatActivity() {
                 if (binding.targetNumInput.text.isNotBlank() && binding.targetNumInput.text.toString().toInt() in 1..10){
                     targetNum=binding.targetNumInput.text.toString().toInt()
                     binding.confirmEditedResult.text="Waiting..."
-                    // Start process
-                    if (OpenCVLoader.initDebug()){
-                        val inputStream2 = contentResolver.openInputStream(imageUri)
-                        var originalImg2 = BitmapFactory.decodeStream(inputStream2)
-                        inputStream2?.close()
 
-                        image = ImageProcessPipeline(originalImg2,targetNum)
-                        binding.imageViewProcess.setImageBitmap(image.returnImg())
-                        Log.d("wu","successfully")
-                    }
-                    else{
-                        Log.d("wu","failed to configure opencv")
-                    }
+                    imageProcessWrap(imageUri)
+
+
+
+                    // Start process
+//                    if (OpenCVLoader.initDebug()){
+//                        val inputStream2 = contentResolver.openInputStream(imageUri)
+//                        var originalImg2 = BitmapFactory.decodeStream(inputStream2)
+//                        inputStream2?.close()
+//
+//                        image = ImageProcessPipeline(originalImg2,targetNum)
+//                        binding.imageViewProcess.setImageBitmap(image.returnImg())
+//                        Log.d("wu","successfully")
+//                    }
+//                    else{
+//                        Log.d("wu","failed to configure opencv")
+//                    }
                     binding.allScoreWrap.visibility= VISIBLE
 
                     binding.confirmEditedResult.text="confirm"
@@ -106,6 +114,20 @@ class PhotoProcess : AppCompatActivity() {
         }
     }
 
+    private fun imageProcessWrap(imgUri: Uri){
+        val inputStream = contentResolver.openInputStream(imgUri)
+        var originalImg2 = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+
+        if(!Python.isStarted()){
+            Python.start(AndroidPlatform(this))
+        }
+
+        val py = Python.getInstance()
+        val call = py.getModule("hello").callAttr("getArray") //("getData")
+        Log.d("wu",call.toString())
+
+    }
     private fun confirmResult(){
         var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
 

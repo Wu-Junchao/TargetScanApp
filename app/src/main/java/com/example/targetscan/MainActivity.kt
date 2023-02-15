@@ -1,7 +1,5 @@
 package com.example.targetscan
 
-import android.R.attr.left
-import android.R.attr.right
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,11 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.targetscan.databinding.ActivityMainBinding
-import org.opencv.android.OpenCVLoader
-import org.opencv.imgcodecs.Imgcodecs
-import org.opencv.imgproc.Imgproc
-import java.io.File
-import java.time.LocalDate
+import com.chaquo.python.PyException
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 
 
 class MainActivity : AppCompatActivity() {
@@ -71,7 +67,6 @@ class MainActivity : AppCompatActivity() {
 //                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
             }
         }
-
 
 //        Log.d("wu", externalCacheDir?.list()?.get().toString())
         for (i in 0 until totalNum){
