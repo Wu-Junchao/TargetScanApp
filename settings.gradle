@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "TargetScan"
 include ':app'
-include ':sdk'

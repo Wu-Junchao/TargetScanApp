@@ -1,1 +1,0 @@
-/Users/wu/AndroidStudioProjects/TargetScan/sdk/build/intermediates/cxx/Debug/4d6t2m23/obj/x86

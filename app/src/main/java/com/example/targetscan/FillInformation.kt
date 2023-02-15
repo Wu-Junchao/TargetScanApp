@@ -36,8 +36,7 @@ class FillInformation : AppCompatActivity() {
         return "$year-${m}-${d}"
     }
 
-    private fun removeEmptyPhoto(index:Int,year:Int, month: Int, day:Int){
-        val concatDate = "$index{dateFormat(year,month,day)}"
+    private fun removeEmptyPhoto(){
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
 
         var photoList = externalCacheDir?.list()
@@ -64,10 +63,10 @@ class FillInformation : AppCompatActivity() {
 
         //restart Parameter
         val index = intent.getIntExtra("index",0)
-        val year =intent.getIntExtra("year",1111)
-        val month = intent.getIntExtra("month",1)
-        val day = intent.getIntExtra("day",1)
-        val comment = intent.getStringExtra("comment")
+        var year =intent.getIntExtra("year",1111)
+        var month = intent.getIntExtra("month",1)
+        var day = intent.getIntExtra("day",1)
+        var comment = intent.getStringExtra("comment")
         binding.commentInput.setText(comment)
 
         supportActionBar?.title = "Entering information";
@@ -76,12 +75,12 @@ class FillInformation : AppCompatActivity() {
         initDateSelector(year,month-1,day)
 
         binding.confirmBtn.setOnClickListener {
-            val year = binding.dateInput.year
-            val month = binding.dateInput.month+1
-            val day = binding.dateInput.dayOfMonth
-            val comment = binding.commentInput.text.toString()
-            removeEmptyPhoto(selectedIndex,year,month,day)
-            if (comment.length>250){
+            year = binding.dateInput.year
+            month = binding.dateInput.month+1
+            day = binding.dateInput.dayOfMonth
+            comment = binding.commentInput.text.toString()
+            removeEmptyPhoto()
+            if (comment!!.length>250){
                 Toast.makeText(this, "Comment length exceeds 250 chars.", Toast.LENGTH_SHORT).show()
             }
             else{
@@ -90,7 +89,7 @@ class FillInformation : AppCompatActivity() {
                 intent.putExtra("year", year)
                 intent.putExtra("month", month)
                 intent.putExtra("day", day)
-                intent.putExtra("comment",comment.trim())
+                intent.putExtra("comment",comment!!.trim())
                 Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
                 startActivity(intent)
                 finish()
@@ -100,7 +99,7 @@ class FillInformation : AppCompatActivity() {
             val year = binding.dateInput.year
             val month = binding.dateInput.month+1
             val day = binding.dateInput.dayOfMonth
-            removeEmptyPhoto(selectedIndex,year,month,day)
+            removeEmptyPhoto()
 
             intent = Intent(this,MainActivity::class.java)
             startActivity(intent)

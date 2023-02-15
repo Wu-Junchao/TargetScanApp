@@ -3,12 +3,10 @@ package com.example.targetscan
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -16,19 +14,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
-import androidx.core.graphics.rotationMatrix
-import androidx.core.text.set
-import androidx.core.view.isVisible
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
-import org.opencv.android.OpenCVLoader
-import org.opencv.android.Utils
-import org.opencv.core.Mat
-import org.opencv.imgcodecs.Imgcodecs
-import org.opencv.imgproc.Imgproc
 import java.io.File
-import java.time.Month
 
 class PhotoProcess : AppCompatActivity() {
     private lateinit var binding:ActivityPhotoProcessBinding
@@ -42,7 +31,6 @@ class PhotoProcess : AppCompatActivity() {
     private var imgName :String? = null
     private var targetNum =10
     private var scoreList = arrayOf<Int>()
-    lateinit private var image :ImageProcessPipeline
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,21 +74,6 @@ class PhotoProcess : AppCompatActivity() {
 
                     imageProcessWrap(imageUri)
 
-
-
-                    // Start process
-//                    if (OpenCVLoader.initDebug()){
-//                        val inputStream2 = contentResolver.openInputStream(imageUri)
-//                        var originalImg2 = BitmapFactory.decodeStream(inputStream2)
-//                        inputStream2?.close()
-//
-//                        image = ImageProcessPipeline(originalImg2,targetNum)
-//                        binding.imageViewProcess.setImageBitmap(image.returnImg())
-//                        Log.d("wu","successfully")
-//                    }
-//                    else{
-//                        Log.d("wu","failed to configure opencv")
-//                    }
                     binding.allScoreWrap.visibility= VISIBLE
 
                     binding.confirmEditedResult.text="confirm"
