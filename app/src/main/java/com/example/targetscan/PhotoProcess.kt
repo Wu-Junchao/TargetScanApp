@@ -115,17 +115,16 @@ class PhotoProcess : AppCompatActivity() {
     }
 
     private fun imageProcessWrap(imgUri: Uri){
-        val inputStream = contentResolver.openInputStream(imgUri)
-        var originalImg2 = BitmapFactory.decodeStream(inputStream)
-        inputStream?.close()
+        val content = contentResolver.openInputStream(imgUri)!!.use { it.readBytes() }
 
         if(!Python.isStarted()){
             Python.start(AndroidPlatform(this))
         }
 
         val py = Python.getInstance()
-        val call = py.getModule("hello").callAttr("getArray") //("getData")
-        Log.d("wu",call.toString())
+        val bytes = py.getModule("imageProcess").callAttr("main",content).toJava(ByteArray::class.java) //("getData")
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        binding.imageViewProcess.setImageBitmap(bitmap)
 
     }
     private fun confirmResult(){

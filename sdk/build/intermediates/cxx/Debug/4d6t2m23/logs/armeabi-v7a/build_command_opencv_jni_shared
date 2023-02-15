@@ -1,0 +1,4 @@
+/Users/wu/Library/Android/sdk/cmake/3.18.1/bin/ninja \
+  -C \
+  /Users/wu/AndroidStudioProjects/TargetScan/sdk/.cxx/Debug/4d6t2m23/armeabi-v7a \
+  opencv_jni_shared

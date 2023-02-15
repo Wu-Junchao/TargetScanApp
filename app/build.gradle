@@ -21,9 +21,12 @@ android {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
         python {
-            version "3.9"
+            buildPython "/opt/anaconda3/envs/targetScan/bin/python3.8"
+            version "3.8"
             pip{
                 install "numpy"
+                install "opencv-python"
+                install "matplotlib"
             }
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

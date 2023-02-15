@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/targetNumInput"
             android:inputType="numberSigned"
+            android:text="10"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/targetNumText"
