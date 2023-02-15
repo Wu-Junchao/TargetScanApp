@@ -109,6 +109,22 @@ def simpleEllipse2Circle(img, a, b, angle):
     circle_out = cv2.warpAffine(img, M, (w, h), borderValue=255)
     return circle_out
 
+def getCertainOriginalImageCut(index):
+    _,buffer = cv2.imencode(".jpg",resultsCollection[index].originalImageCut)
+    return io.BytesIO(buffer).getvalue()
+
+def getCertainMaskedImageCut(index):
+    _,buffer = cv2.imencode(".jpg",resultsCollection[index].maskedImageCut)
+    return io.BytesIO(buffer).getvalue()
+
+def getCertainScore(index):
+    return str(resultsCollection[index].score)
+
+def getLabeledWholeTargetPaper():
+    global  originalImgSmall
+    _,buffer = cv2.imencode(".jpg",originalImgSmall)
+    return io.BytesIO(buffer).getvalue()
+
 def main(content):
     # read from Kotlin
     content_file = io.BytesIO(content)
@@ -122,6 +138,10 @@ def main(content):
 
     img=cv2.copyMakeBorder(img, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, cv2.BORDER_REPLICATE)
     originalImg = img.copy()
+    global originalImgSmall
+    originalImgSmall= resize2Width(SCALED_WIDTH,originalImg)
+
+    # Next block
     img_binarized = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 199, 5)
     kernel = np.ones((5,5),np.uint8)
     img_closing = cv2.morphologyEx(255-img_binarized, cv2.MORPH_CLOSE, kernel)
@@ -159,16 +179,16 @@ def main(content):
         (x,y),radius = cv2.minEnclosingCircle(contoursFiltered[i])
         center = (int(x),int(y))
         radius = int(radius)
-        cv2.circle(img_blured_small,center,radius,(0,255,0),2)
+        cv2.circle(originalImgSmall,center,radius,(0,255,0),2)
         # labelling the circles around the centers, in no particular order.
         position = (center[0] - 10, center[1] + 10)
-        text_color = (0, 0, 255)
-        plt.imshow(cv2.putText(img_blured_small, str(i+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
+        text_color = (255, 255, 255)
+        plt.imshow(cv2.putText(originalImgSmall, str(i+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
 
     # Next block
     fig = plt.figure(figsize=(12, 12))
 
-    resultsCollection=[]
+
     i=1
     contourSize = len(contoursFiltered)
     kernel = [np.ones((x,x),np.uint8) for x in (7,13,19,25)]
@@ -230,5 +250,5 @@ def main(content):
     plt.show()
 
     # return img
-    _,buffer = cv2.imencode(".jpg",resultsCollection[2].originalImageCut)
-    return io.BytesIO(buffer).getvalue()
+originalImgSmall = None
+resultsCollection=[]

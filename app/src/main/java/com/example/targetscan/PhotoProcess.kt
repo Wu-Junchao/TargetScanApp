@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
 import androidx.core.graphics.rotationMatrix
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -115,6 +116,7 @@ class PhotoProcess : AppCompatActivity() {
     }
 
     private fun imageProcessWrap(imgUri: Uri){
+        var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
         val content = contentResolver.openInputStream(imgUri)!!.use { it.readBytes() }
 
         if(!Python.isStarted()){
@@ -122,9 +124,15 @@ class PhotoProcess : AppCompatActivity() {
         }
 
         val py = Python.getInstance()
-        val bytes = py.getModule("imageProcess").callAttr("main",content).toJava(ByteArray::class.java) //("getData")
+        py.getModule("imageProcess").callAttr("main",content)
+//        val bytes =    py.getModule("imageProcess").callAttr("getCertainMaskedImageCut",2).toJava(ByteArray::class.java) //("getData")
+        val bytes =    py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper").toJava(ByteArray::class.java) //("getData")
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         binding.imageViewProcess.setImageBitmap(bitmap)
+        for (i in 0 until targetNum){
+            val result = 10+py.getModule("imageProcess").callAttr("getCertainScore",i).toJava(String::class.java).toInt()
+            scoreTextList[i].setText(result.toString())
+        }
 
     }
     private fun confirmResult(){
