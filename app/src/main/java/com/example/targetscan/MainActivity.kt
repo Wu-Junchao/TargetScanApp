@@ -19,7 +19,7 @@ import com.chaquo.python.android.AndroidPlatform
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding:ActivityMainBinding
-    private val shootList = ArrayList<ShootRecord>()
+    private var shootList = ArrayList<ShootRecord>()
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
         return true
@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 //        Log.d("wu", externalCacheDir?.list()?.get().toString())
+        shootList=ArrayList<ShootRecord>()
         for (i in 0 until totalNum){
             shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
         }
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         var totalNum = access.getInt("totalNum",-1)
+        shootList=ArrayList<ShootRecord>()
         for (i in 0 until totalNum){
             shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
         }

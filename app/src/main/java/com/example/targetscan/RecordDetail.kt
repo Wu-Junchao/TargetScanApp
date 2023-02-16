@@ -6,9 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.core.content.FileProvider
-import androidx.core.database.getIntOrNull
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
 import java.io.File
 
@@ -27,9 +25,9 @@ class RecordDetail : AppCompatActivity() {
 
 
         setSupportActionBar(binding.toolbarRecordDetail)
-        supportActionBar?.title = "Record Details";
+        supportActionBar?.title = "Record Details"
 
-        outputImage = File(externalCacheDir,imgName)
+        outputImage = File(externalCacheDir,imgName!!)
         if (outputImage.exists()){
             imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
                 FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
@@ -44,14 +42,14 @@ class RecordDetail : AppCompatActivity() {
             finish()
         }
 
-        if (imgName != null) {
+
             if (imgProcessLabel!="Processed"){
                 binding.InformationCollect.text="Not yet processed"
             }
             else {
                 displayData(imgName)
             }
-        }
+
 
         binding.backButton.setOnClickListener{
             intent = Intent(this,MainActivity::class.java)
