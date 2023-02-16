@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
+import androidx.core.view.isVisible
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
@@ -31,6 +32,7 @@ class PhotoProcess : AppCompatActivity() {
     private var imgName :String? = null
     private var targetNum =10
     private var scoreList = arrayOf<Int>()
+    private var iterate = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +88,20 @@ class PhotoProcess : AppCompatActivity() {
                 confirmResult()
             }
         }
+        binding.iterateImgButton.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",iterate).toJava(ByteArray::class.java)
+            iterate=when (iterate<9){
+                true->iterate+1
+                false->iterate
+            }
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
     }
 
     private fun imageProcessWrap(imgUri: Uri){
@@ -106,7 +122,7 @@ class PhotoProcess : AppCompatActivity() {
             val result = 10+py.getModule("imageProcess").callAttr("getCertainScore",i).toJava(String::class.java).toInt()
             scoreTextList[i].setText(result.toString())
         }
-
+        binding.iterateImgButton.isVisible= true
     }
     private fun confirmResult(){
         var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
@@ -128,12 +144,14 @@ class PhotoProcess : AppCompatActivity() {
                 return
             }
         }
-
+        if (comment.isNullOrBlank()){
+            comment = ""
+        }
         // Add to SQLite database
         imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum) } }
 
-        val intent = Intent(this,MainActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this,MainActivity::class.java)
+//        startActivity(intent)
         finish()
     }
 

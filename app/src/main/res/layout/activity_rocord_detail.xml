@@ -49,7 +49,14 @@
         app:layout_constraintTop_toBottomOf="@id/InformationCollect"
         app:layout_constraintBottom_toTopOf="@id/backButton"/>
 
-
+    <Button
+        android:id="@+id/processButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Process"
+        app:layout_constraintTop_toBottomOf="@id/ScoreCollect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/backButton"

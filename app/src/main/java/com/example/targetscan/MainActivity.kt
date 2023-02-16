@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         else{
             for (photo in photoList){
                 photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
-//                photoCorr[photo]?.let { Log.d("wu", "$photo:$it") }
             }
         }
 
@@ -85,10 +84,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        var photoList = externalCacheDir?.list()
+        var photoCorr = mutableMapOf<String,String>()
+        if (photoList.isNullOrEmpty()){
+            photoList = arrayOf<String>()
+        }
+        else{
+            for (photo in photoList){
+                photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
+            }
+        }
+        var totalNum = access.getInt("totalNum",-1)
+        for (i in 0 until totalNum){
+            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
+        }
+        val adapter = ShootRecordAdapter(shootList)
+        binding.shootingHistory.adapter = adapter
+    }
+
     private fun initializeDatabase(){
         val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
         dbHelper.writableDatabase
     }
+
+
 
     fun getStatusBarHeight(): Int {
         var result = 0

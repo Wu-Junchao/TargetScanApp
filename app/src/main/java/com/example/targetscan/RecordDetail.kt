@@ -59,6 +59,13 @@ class RecordDetail : AppCompatActivity() {
             finish()
         }
 
+        binding.processButton.setOnClickListener {
+            val intent = Intent(this,PhotoProcess::class.java)
+            intent.putExtra("ImgName",imgName)
+            startActivity(intent)
+            finish()
+        }
+
     }
 
     @SuppressLint("Range")
