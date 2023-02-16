@@ -47,7 +47,7 @@ class PhotoProcess : AppCompatActivity() {
         imgName = intent.getStringExtra("ImgName")
 
         setSupportActionBar(binding.toolbarPhotoProcess)
-        supportActionBar?.title = "Photo Process";
+        supportActionBar?.title = "Photo Process"
 
 
         outputImage = File(externalCacheDir,imgName)
@@ -70,8 +70,8 @@ class PhotoProcess : AppCompatActivity() {
         binding.allScoreWrap.visibility=INVISIBLE
         binding.confirmEditedResult.setOnClickListener {
             if (binding.allScoreWrap.visibility == INVISIBLE){
-                if (binding.targetNumInput.text.isNotBlank() && binding.targetNumInput.text.toString().toInt() in 1..10){
-                    targetNum=binding.targetNumInput.text.toString().toInt()
+                if (true){
+
                     binding.confirmEditedResult.text="Waiting..."
 
                     imageProcessWrap(imageUri)
@@ -117,8 +117,11 @@ class PhotoProcess : AppCompatActivity() {
 //        val bytes =    py.getModule("imageProcess").callAttr("getCertainMaskedImageCut",2).toJava(ByteArray::class.java) //("getData")
         val bytes =    py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper").toJava(ByteArray::class.java) //("getData")
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        targetNum = py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java).toInt()
+        binding.targetNumInput.setText(targetNum.toString())
         binding.imageViewProcess.setImageBitmap(bitmap)
         for (i in 0 until targetNum){
+            //TODO add index check
             val result = 10+py.getModule("imageProcess").callAttr("getCertainScore",i).toJava(String::class.java).toInt()
             scoreTextList[i].setText(result.toString())
         }

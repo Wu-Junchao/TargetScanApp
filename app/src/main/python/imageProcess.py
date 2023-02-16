@@ -109,16 +109,37 @@ def simpleEllipse2Circle(img, a, b, angle):
     circle_out = cv2.warpAffine(img, M, (w, h), borderValue=255)
     return circle_out
 
+def getTargetNum():
+    global resultsCollection
+    size = len(resultsCollection)
+    return str(size)
+
 def getCertainOriginalImageCut(index):
-    _,buffer = cv2.imencode(".jpg",resultsCollection[index].originalImageCut)
-    return io.BytesIO(buffer).getvalue()
+    global resultsCollection
+    size = len(resultsCollection)
+    if index<size and index>=0:
+        _,buffer = cv2.imencode(".jpg",resultsCollection[index].originalImageCut)
+        return io.BytesIO(buffer).getvalue()
+    else:
+        return io.BytesIO().getvalue()
+
 
 def getCertainMaskedImageCut(index):
-    _,buffer = cv2.imencode(".jpg",resultsCollection[index].maskedImageCut)
-    return io.BytesIO(buffer).getvalue()
+    global resultsCollection
+    size = len(resultsCollection)
+    if index<size and index>=0:
+        _,buffer = cv2.imencode(".jpg",resultsCollection[index].maskedImageCut)
+        return io.BytesIO(buffer).getvalue()
+    else:
+        return io.BytesIO().getvalue()
 
 def getCertainScore(index):
-    return str(resultsCollection[index].score)
+    global  resultsCollection
+    size = len(resultsCollection)
+    if index<size and index>=0:
+        return str(resultsCollection[index].score)
+    else:
+        return "-999"
 
 def getLabeledWholeTargetPaper():
     global  originalImgSmall
@@ -193,6 +214,8 @@ def main(content):
     contourSize = len(contoursFiltered)
     kernel = [np.ones((x,x),np.uint8) for x in (7,13,19,25)]
     scale_percent = SCALED_WIDTH/img.shape[1]
+    global resultsCollection
+    resultsCollection = []
     for contour in contoursFiltered:
 
         # cut each target from full image
@@ -251,4 +274,4 @@ def main(content):
 
     # return img
 originalImgSmall = None
-resultsCollection=[]
+resultsCollection= None
