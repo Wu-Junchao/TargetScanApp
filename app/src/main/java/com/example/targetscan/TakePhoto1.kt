@@ -140,7 +140,7 @@ class TakePhoto1 : AppCompatActivity() {
 // 将拍摄的照片显示出来
                     val bitmap = BitmapFactory.decodeStream(contentResolver.
                     openInputStream(imageUri))
-                    binding.imageView.setImageBitmap(rotateIfRequired(bitmap))
+//                    binding.imageView.setImageBitmap(rotateIfRequired(bitmap))
                     binding.confirmPhotoBtn.isVisible=true
                     binding.takePhotoBtn.text="Retake photo"
                 } }

@@ -68,21 +68,17 @@ class PhotoProcess : AppCompatActivity() {
             finish()
         }
         binding.allScoreWrap.visibility=INVISIBLE
+        binding.targetNumWrap.visibility= INVISIBLE
         binding.confirmEditedResult.setOnClickListener {
             if (binding.allScoreWrap.visibility == INVISIBLE){
-                if (true){
 
-                    binding.confirmEditedResult.text="Waiting..."
+                binding.confirmEditedResult.text="Waiting..."
 
-                    imageProcessWrap(imageUri)
+                imageProcessWrap(imageUri)
 
-                    binding.allScoreWrap.visibility= VISIBLE
-
-                    binding.confirmEditedResult.text="confirm"
-                }
-                else{
-                    Toast.makeText(this, "The number of targets should between 1 and 10.", Toast.LENGTH_SHORT).show()
-                }
+                binding.allScoreWrap.visibility= VISIBLE
+                binding.targetNumWrap.visibility= VISIBLE
+                binding.confirmEditedResult.text="confirm"
             }
             else{
                 confirmResult()
