@@ -84,17 +84,125 @@ class PhotoProcess : AppCompatActivity() {
                 confirmResult()
             }
         }
-        binding.iterateImgButton.setOnClickListener {
+        binding.fullImgButton.setOnClickListener {
             if(!Python.isStarted()){
                 Python.start(AndroidPlatform(this))
             }
 
             val py = Python.getInstance()
-            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",iterate).toJava(ByteArray::class.java)
-            iterate=when (iterate<9){
-                true->iterate+1
-                false->iterate
+            val bytes = py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper")
+                .toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName1.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
             }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",0).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName2.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",1).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName3.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",2).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName4.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",3).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName5.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",4).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName6.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",5).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName7.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",6).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName8.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",7).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName9.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",8).toJava(ByteArray::class.java)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageViewProcess.setImageBitmap(bitmap)
+        }
+        binding.scoreName10.setOnClickListener {
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+
+            val py = Python.getInstance()
+            val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",9).toJava(ByteArray::class.java)
+
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
             binding.imageViewProcess.setImageBitmap(bitmap)
         }
@@ -111,9 +219,8 @@ class PhotoProcess : AppCompatActivity() {
         val py = Python.getInstance()
         val resultSuccess = py.getModule("imageProcess").callAttr("main",content).toJava(Int::class.java)
         if (resultSuccess==0) {
-//        val bytes =    py.getModule("imageProcess").callAttr("getCertainMaskedImageCut",2).toJava(ByteArray::class.java) //("getData")
             val bytes = py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper")
-                .toJava(ByteArray::class.java) //("getData")
+                .toJava(ByteArray::class.java)
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
             targetNum =
                 py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java)
@@ -121,7 +228,7 @@ class PhotoProcess : AppCompatActivity() {
             binding.targetNumInput.setText(targetNum.toString())
             binding.imageViewProcess.setImageBitmap(bitmap)
             for (i in 0 until targetNum) {
-                //TODO add index check
+
                 val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
                     .toJava(String::class.java).toInt()
                 scoreTextList[i].setText(result.toString())
@@ -131,7 +238,7 @@ class PhotoProcess : AppCompatActivity() {
             binding.targetNumInput.setText("0")
             targetNum=0
         }
-        binding.iterateImgButton.isVisible= true
+
     }
     private fun confirmResult(){
         var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
