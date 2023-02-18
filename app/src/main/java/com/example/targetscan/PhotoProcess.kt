@@ -109,17 +109,27 @@ class PhotoProcess : AppCompatActivity() {
         }
 
         val py = Python.getInstance()
-        py.getModule("imageProcess").callAttr("main",content)
+        val resultSuccess = py.getModule("imageProcess").callAttr("main",content).toJava(Int::class.java)
+        if (resultSuccess==0) {
 //        val bytes =    py.getModule("imageProcess").callAttr("getCertainMaskedImageCut",2).toJava(ByteArray::class.java) //("getData")
-        val bytes =    py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper").toJava(ByteArray::class.java) //("getData")
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-        targetNum = py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java).toInt()
-        binding.targetNumInput.setText(targetNum.toString())
-        binding.imageViewProcess.setImageBitmap(bitmap)
-        for (i in 0 until targetNum){
-            //TODO add index check
-            val result = 10+py.getModule("imageProcess").callAttr("getCertainScore",i).toJava(String::class.java).toInt()
-            scoreTextList[i].setText(result.toString())
+            val bytes = py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper")
+                .toJava(ByteArray::class.java) //("getData")
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            targetNum =
+                py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java)
+                    .toInt()
+            binding.targetNumInput.setText(targetNum.toString())
+            binding.imageViewProcess.setImageBitmap(bitmap)
+            for (i in 0 until targetNum) {
+                //TODO add index check
+                val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
+                    .toJava(String::class.java).toInt()
+                scoreTextList[i].setText(result.toString())
+            }
+        }
+        else{
+            binding.targetNumInput.setText("0")
+            targetNum=0
         }
         binding.iterateImgButton.isVisible= true
     }

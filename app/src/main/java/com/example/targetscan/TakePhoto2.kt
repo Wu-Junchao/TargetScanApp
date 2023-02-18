@@ -96,7 +96,7 @@ class TakePhoto2 : AppCompatActivity() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+//                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
                 }
 
             imageCapture = ImageCapture.Builder().setFlashMode(FLASH_MODE_ON).setCaptureMode(
@@ -216,7 +216,7 @@ class TakePhoto2 : AppCompatActivity() {
         val editor = access.edit()
         var totalNum = access.getInt("totalNum", -1)
 
-        binding.cameraPreview.scaleType = PreviewView.ScaleType.FIT_CENTER
+//        binding.cameraPreview.scaleType = PreviewView.ScaleType.FIT_CENTER
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()

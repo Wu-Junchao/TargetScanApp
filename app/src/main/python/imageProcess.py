@@ -185,6 +185,9 @@ def main(content):
         contoursFiltered.append(contour)
         radiusCollect.append(radius)
 
+    if len(radiusCollect)==0:
+        return 1
+
     radiusCollect = np.array(radiusCollect)
     q75, q25 = np.percentile(radiusCollect, [75 ,25])
     iqr = q75 - q25
@@ -271,6 +274,7 @@ def main(content):
         plt.imshow(resultsCollection[i-1].originalImageCut,cmap="gray")
         i+=1
     plt.show()
+    return 0
 
     # return img
 originalImgSmall = None

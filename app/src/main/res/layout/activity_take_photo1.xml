@@ -34,17 +34,17 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="10dp"/>
 
-    <!--    <ImageView-->
-<!--        android:id="@+id/imageView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="400dp"-->
-<!--        android:layout_gravity="center_horizontal" />-->
+        <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal" />
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/cameraPreview"
-        android:layout_width="375dp"
-        android:layout_height="500dp"
-        android:layout_gravity="center_horizontal"/>
+<!--    <androidx.camera.view.PreviewView-->
+<!--        android:id="@+id/cameraPreview"-->
+<!--        android:layout_width="375dp"-->
+<!--        android:layout_height="500dp"-->
+<!--        android:layout_gravity="center_horizontal"/>-->
 
     <Button
         android:layout_width="match_parent"
