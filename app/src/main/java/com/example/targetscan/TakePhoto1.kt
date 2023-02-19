@@ -12,14 +12,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.example.targetscan.databinding.ActivityTakePhoto1Binding
 import java.io.File
-import java.time.LocalDate
-import java.time.Month
 
 class TakePhoto1 : AppCompatActivity() {
     lateinit var binding: ActivityTakePhoto1Binding
@@ -65,7 +61,7 @@ class TakePhoto1 : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar2)
-        supportActionBar?.title = "Add new record";
+        supportActionBar?.title = "Add new record"
 
         discplineList = mutableListOf<String>("Rifle shoot","Test")
         val index = intent.getIntExtra("index",0)

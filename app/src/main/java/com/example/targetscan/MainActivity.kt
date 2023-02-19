@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.targetscan.databinding.ActivityMainBinding
 
 import android.Manifest
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
@@ -19,7 +20,9 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding:ActivityMainBinding
-    private var shootList = ArrayList<ShootRecord>()
+    private var dateRecord = ArrayList<DateRecord>()
+    private var year = "2023"
+    private var month = "02"
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
@@ -85,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        supportActionBar?.title = "Shooting Records";
+        supportActionBar?.title = "Shooting Records"
 
         // Initialize shared preference XML
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -95,29 +98,8 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("totalNum",0)
             editor.apply()
         }
-        var totalNum = access.getInt("totalNum",-1)
 
-        // Read all images name
-        var photoList = externalCacheDir?.list()
-        var photoCorr = mutableMapOf<String,String>()
-        if (photoList.isNullOrEmpty()){
-            photoList = arrayOf<String>()
-        }
-        else{
-            for (photo in photoList){
-                photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
-            }
-        }
-
-//        Log.d("wu", externalCacheDir?.list()?.get().toString())
-        shootList=ArrayList<ShootRecord>()
-        for (i in 0 until totalNum){
-            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
-        }
-        val layoutManager = LinearLayoutManager(this)
-        binding.shootingHistory.layoutManager = layoutManager
-        val adapter = ShootRecordAdapter(shootList)
-        binding.shootingHistory.adapter = adapter
+        setupAdapter(access)
 
         initializeDatabase()
 
@@ -130,23 +112,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-        var photoList = externalCacheDir?.list()
-        var photoCorr = mutableMapOf<String,String>()
-        if (photoList.isNullOrEmpty()){
-            photoList = arrayOf<String>()
-        }
-        else{
-            for (photo in photoList){
-                photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
-            }
-        }
-        var totalNum = access.getInt("totalNum",-1)
-        shootList=ArrayList<ShootRecord>()
-        for (i in 0 until totalNum){
-            shootList.add(ShootRecord(photoList[i], androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[photoList[i]]!!))
-        }
-        val adapter = ShootRecordAdapter(shootList)
-        binding.shootingHistory.adapter = adapter
+        setupAdapter(access)
     }
 
     private fun initializeDatabase(){
@@ -154,14 +120,35 @@ class MainActivity : AppCompatActivity() {
         dbHelper.writableDatabase
     }
 
-
-
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
+    private fun setupAdapter(access: SharedPreferences){
+        // Read all images name
+        var photoList = externalCacheDir?.list()
+        var DateCorr = mutableMapOf<String,Int>()
+        if (photoList.isNullOrEmpty()){
+            photoList = arrayOf<String>()
         }
-        return result
+        else{
+            for (photo in photoList){
+                if (photo.slice(1..4) == year && photo.slice(6..7)==month){
+                    if (DateCorr.containsKey(photo.slice(1..10))){
+                        DateCorr[photo.slice(1..10)]=DateCorr[photo.slice(1..10)]!!+1
+                    }
+                    else{
+                        DateCorr[photo.slice(1..10)]=1
+                    }
+                }
+
+            }
+        }
+
+
+        dateRecord=ArrayList<DateRecord>()
+        for (i in DateCorr.keys){
+            dateRecord.add(DateRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,DateCorr[i]!!))
+        }
+        val layoutManager = LinearLayoutManager(this)
+        binding.shootingHistory.layoutManager = layoutManager
+        val adapter = DateRecordAdapter(dateRecord)
+        binding.shootingHistory.adapter = adapter
     }
 }

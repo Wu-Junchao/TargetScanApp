@@ -10,11 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter<ShootRecordAdapter.ViewHolder>() {
+class DateRecordAdapter(val dateList:List<DateRecord>) : RecyclerView.Adapter<DateRecordAdapter.ViewHolder>() {
     inner class ViewHolder(view:View):RecyclerView.ViewHolder(view){
-        val shootImage: ImageView = view.findViewById(R.id.shootingImage)
-        val shootName: TextView = view.findViewById(R.id.shootingName)
-        val shootProcessLabel : TextView = view.findViewById(R.id.processLabel)
+        val dateImage: ImageView = view.findViewById(R.id.shootingImage)
+        val dateName: TextView = view.findViewById(R.id.shootingName)
+        val dateNumber : TextView = view.findViewById(R.id.processLabel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,18 +23,16 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
         val viewHolder = ViewHolder(view)
         viewHolder.itemView.setOnClickListener{
             val position = viewHolder.adapterPosition
-            val shootRecord = shootList[position]
+            val shootRecord = dateList[position]
             Toast.makeText(parent.context, "You click num ${position}", Toast.LENGTH_SHORT).show()
-            val intent = Intent(parent.context,RecordDetail::class.java)
-            intent.putExtra("position",position)
-            intent.putExtra("name",shootRecord.name)
-            intent.putExtra("processLabel",shootRecord.processLabel)
+            val intent = Intent(parent.context,MonthSelect::class.java)
+            intent.putExtra("date",dateList[position].name)
             parent.context.startActivity(intent)
 
         }
         viewHolder.itemView.setOnLongClickListener {
             val position = viewHolder.adapterPosition
-            val shootRecord = shootList[position]
+            val shootRecord = dateList[position]
             Toast.makeText(parent.context, "You long click num ${position}", Toast.LENGTH_SHORT).show()
             true
         }
@@ -42,12 +40,12 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val shoot = shootList[position]
-        holder.shootName.text=shoot.name
-        holder.shootImage.setImageResource(shoot.imageId)
-        holder.shootProcessLabel.text = shoot.processLabel
+        val shoot = dateList[position]
+        holder.dateName.text=shoot.name
+        holder.dateImage.setImageResource(shoot.imageId)
+        holder.dateNumber.text = shoot.number.toString()
     }
     override fun getItemCount(): Int {
-        return shootList.size
+        return dateList.size
     }
 }

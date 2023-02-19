@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +14,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
-import androidx.core.view.isVisible
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
@@ -56,11 +54,7 @@ class PhotoProcess : AppCompatActivity() {
 
         outputImage = File(externalCacheDir,imgName)
         if (outputImage.exists()){
-            imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
-            }else{
-                Uri.fromFile(outputImage)
-            }
+            imageUri =FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
             val inputStream = contentResolver.openInputStream(imageUri)
             var originalImg = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()

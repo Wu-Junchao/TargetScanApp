@@ -6,10 +6,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View.GONE
 import android.view.View.INVISIBLE
 import androidx.core.content.FileProvider
-import androidx.core.view.isVisible
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
 import java.io.File
 
@@ -41,7 +39,7 @@ class RecordDetail : AppCompatActivity() {
             binding.imageDetail.setImageURI(imageUri)
         }
         else{
-            val intent = Intent(this,FillInformation::class.java)
+            val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
             finish()
         }

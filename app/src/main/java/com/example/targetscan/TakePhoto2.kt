@@ -1,8 +1,6 @@
 package com.example.targetscan
 
 import android.Manifest
-import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,8 +12,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -25,33 +24,24 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import com.example.targetscan.databinding.ActivityTakePhoto1Binding
 import java.io.File
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.Recorder
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoCapture
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.targetscan.MainActivity.Companion.REQUEST_CODE_PERMISSIONS
 import com.example.targetscan.databinding.ActivityTakePhoto2Binding
-import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class TakePhoto2 : AppCompatActivity() {
     lateinit var binding: ActivityTakePhoto2Binding
-    val takePhoto = 1
     lateinit var imageUri: Uri
     lateinit var outputImage: File
     lateinit var discplineList: MutableList<String>
     var nextID = 1
 
     private var imageCapture: ImageCapture? = null
-
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -189,6 +179,13 @@ class TakePhoto2 : AppCompatActivity() {
                     Log.d("wu", msg)
                     binding.confirmPhotoBtn.isVisible=true
                     binding.takePhotoBtn.text="Retake photo"
+                    binding.cameraPreview.visibility=GONE
+                    binding.imageView.visibility= VISIBLE
+                    val inputStream = contentResolver.openInputStream(imageUri)
+                    val originalImg = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+
+                    binding.imageView.setImageBitmap(rotateIfRequired(originalImg))
                     cameraProvider.unbindAll()
                 }
             }
@@ -201,7 +198,7 @@ class TakePhoto2 : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar2)
-        supportActionBar?.title = "Add new record";
+        supportActionBar?.title = "Add new record"
 
         discplineList = mutableListOf<String>("Rifle shoot", "Test")
         val index = intent.getIntExtra("index", 0)
@@ -235,18 +232,25 @@ class TakePhoto2 : AppCompatActivity() {
 
         binding.takePhotoBtn.setOnClickListener {
             if (binding.takePhotoBtn.text.toString() == "Retake photo" && allPermissionsGranted()) {
+                binding.cameraPreview.visibility= VISIBLE
+                binding.imageView.visibility= GONE
+                binding.confirmPhotoBtn.isVisible=false
+                binding.takePhotoBtn.text="take photo"
                 startCamera()
-            }
-            outputImage = File(
-                externalCacheDir,
-                "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg"
-            )
-            if (outputImage.exists()) {
-                outputImage.delete()
-            }
-            outputImage.createNewFile()
-            takePhoto(outputImage)
 
+            }
+            else{
+                outputImage = File(
+                    externalCacheDir,
+                    "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg"
+                )
+                if (outputImage.exists()) {
+                    outputImage.delete()
+                }
+                outputImage.createNewFile()
+                imageUri =FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
+                takePhoto(outputImage)
+            }
         }
 
         binding.cancelPhotoBtn.setOnClickListener {
@@ -291,5 +295,25 @@ class TakePhoto2 : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    private fun rotateIfRequired(bitmap: Bitmap): Bitmap {
+        val exif = ExifInterface(outputImage.path)
+        val orientation = exif.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL)
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap, 270)
+            else -> bitmap
+        } }
+    private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height,
+            matrix, true)
+        bitmap.recycle() // 将不再需要的Bitmap对象回收 return rotatedBitmap
+        return rotatedBitmap
     }
 }
