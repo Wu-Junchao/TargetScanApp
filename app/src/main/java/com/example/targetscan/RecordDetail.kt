@@ -6,7 +6,10 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.INVISIBLE
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
 import java.io.File
 
@@ -16,6 +19,7 @@ class RecordDetail : AppCompatActivity() {
     lateinit var imageUri : Uri
     var displayText = ""
     val disciplineList = mutableListOf<String>("Rifle shoot","Test")
+    var flg = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val imgName = intent.getStringExtra("name")
@@ -42,11 +46,14 @@ class RecordDetail : AppCompatActivity() {
             finish()
         }
 
-
             if (imgProcessLabel!="Processed"){
                 binding.InformationCollect.text="Not yet processed"
+                binding.ScoreCollect.visibility= INVISIBLE
             }
             else {
+//                binding.processButton.visibility=GONE
+                binding.processButton.text="edit"
+                flg=true
                 displayData(imgName)
             }
 
@@ -60,6 +67,9 @@ class RecordDetail : AppCompatActivity() {
         binding.processButton.setOnClickListener {
             val intent = Intent(this,PhotoProcess::class.java)
             intent.putExtra("ImgName",imgName)
+            if (flg){
+                intent.putExtra("editonly",true)
+            }
             startActivity(intent)
             finish()
         }
@@ -69,7 +79,7 @@ class RecordDetail : AppCompatActivity() {
     @SuppressLint("Range")
     private fun displayData(imgName:String){
         val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
-        val db = dbHelper.writableDatabase
+        val db = dbHelper.readableDatabase
 
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
@@ -89,6 +99,8 @@ class RecordDetail : AppCompatActivity() {
 //                Log.d("wu",displayText)
             } while (cursor.moveToNext())
         }
+        db.close()
         cursor.close()
     }
+
 }

@@ -109,6 +109,32 @@ def simpleEllipse2Circle(img, a, b, angle):
     circle_out = cv2.warpAffine(img, M, (w, h), borderValue=255)
     return circle_out
 
+def getLocation(distanceCollect,height,width):
+    outputIndex = []
+    # left-upper and right-bottom
+    temp = [x**2+y**2 for (x,y) in distanceCollect]
+    index = np.argmin(temp)
+    minx = distanceCollect[index][0]
+    index =np.argmax(temp)
+    maxx=distanceCollect[index][0]
+    GAP = int(maxx-minx)//5
+    for row in range(GAP,height+GAP,GAP):
+        for col in range(GAP,width+GAP,GAP):
+            if len(distanceCollect)==0:
+                print(outputIndex)
+                return outputIndex
+            for i in range(len(distanceCollect)):
+                if distanceCollect[i]==False:
+                    continue
+                y=distanceCollect[i][0]
+                x=distanceCollect[i][1]
+                if x<row and y<col:
+                    outputIndex.append(i)
+                    distanceCollect[i]=False
+                    break
+    # print(outputIndex)
+    return outputIndex
+
 def getTargetNum():
     global resultsCollection
     size = len(resultsCollection)
@@ -146,18 +172,27 @@ def getLabeledWholeTargetPaper():
     _,buffer = cv2.imencode(".jpg",originalImgSmall)
     return io.BytesIO(buffer).getvalue()
 
+def getWholeTargetPaper():
+    global  originalImg
+    _,buffer = cv2.imencode(".jpg",originalImg)
+    return io.BytesIO(buffer).getvalue()
+
+
 def main(content):
     # read from Kotlin
     content_file = io.BytesIO(content)
     img = cv2.cvtColor(cv2.imdecode(np.frombuffer(content_file.getbuffer(), np.uint8), -1),cv2.COLOR_BGR2GRAY)
 
+    if img.shape[0]<img.shape[1]:
+        img = cv2.rotate(img,cv2.ROTATE_90_CLOCKWISE)
     # Block 1
     SCALED_WIDTH = 300
     CROPPED_SCALED_WIDTH=300
-    EXTRA_RADIUS_ORIGINAL=20*(img.shape[1]//300)
+    EXTRA_RADIUS_ORIGINAL=20*(img.shape[1]//SCALED_WIDTH)
     EXTRA_RADIUS=30
 
     img=cv2.copyMakeBorder(img, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, cv2.BORDER_REPLICATE)
+    global originalImg
     originalImg = img.copy()
     global originalImgSmall
     originalImgSmall= resize2Width(SCALED_WIDTH,originalImg)
@@ -172,10 +207,13 @@ def main(content):
 
     # next block
     contours,hierarchy = cv2.findContours(img_blured_small, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    height,width = img_blured_small.shape
     print(len(contours))
     contoursFiltered = []
     newContoursFiltered = []
     radiusCollect = []
+    distanceCollect = []
+    newDistanceCollect=[]
     for contour in contours:
         (x,y),radius = cv2.minEnclosingCircle(contour)
         if radius<SCALED_WIDTH*0.05:
@@ -184,30 +222,40 @@ def main(content):
             continue
         contoursFiltered.append(contour)
         radiusCollect.append(radius)
+        distanceCollect.append((x,y))
 
     if len(radiusCollect)==0:
-        return 1
+        pass
+    else:
+        radiusCollect = np.array(radiusCollect)
+        q75, q25 = np.percentile(radiusCollect, [75 ,25])
+        iqr = q75 - q25
+        upperBound = q75+iqr*1.5
+        lowerBound = q25-iqr*1.5
+        # print(upperBound,lowerBound)
+        for i in range(len(contoursFiltered)):
+            if (radiusCollect[i]>=lowerBound and radiusCollect[i]<=upperBound):
+                newContoursFiltered.append(contoursFiltered[i])
+                newDistanceCollect.append(distanceCollect[i])
+        contoursFiltered=newContoursFiltered.copy()
+        distanceCollect = newDistanceCollect.copy()
 
-    radiusCollect = np.array(radiusCollect)
-    q75, q25 = np.percentile(radiusCollect, [75 ,25])
-    iqr = q75 - q25
-    upperBound = q75+iqr*1.5
-    lowerBound = q25-iqr*1.5
-    # print(upperBound,lowerBound)
-    for i in range(len(contoursFiltered)):
-        if radiusCollect[i]>=lowerBound and radiusCollect[i]<=upperBound:
+        # print(distanceCollect)
+        indexArray = getLocation(distanceCollect,height,width)
+        newContoursFiltered=[]
+        n=0
+        for i in indexArray:
+            (x,y),radius = cv2.minEnclosingCircle(contoursFiltered[i])
             newContoursFiltered.append(contoursFiltered[i])
-    contoursFiltered=newContoursFiltered.copy()
-
-    for i in range(len(contoursFiltered)):
-        (x,y),radius = cv2.minEnclosingCircle(contoursFiltered[i])
-        center = (int(x),int(y))
-        radius = int(radius)
-        cv2.circle(originalImgSmall,center,radius,(0,255,0),2)
-        # labelling the circles around the centers, in no particular order.
-        position = (center[0] - 10, center[1] + 10)
-        text_color = (255, 255, 255)
-        plt.imshow(cv2.putText(originalImgSmall, str(i+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
+            center = (int(x),int(y))
+            radius = int(radius)
+            cv2.circle(originalImgSmall,center,radius,(0,255,0),2)
+            # labelling the circles around the centers, in no particular order.
+            position = (center[0] - 10, center[1] + 10)
+            text_color = (255, 255, 255)
+            plt.imshow(cv2.putText(originalImgSmall, str(n+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
+            n+=1
+        contoursFiltered=newContoursFiltered.copy()
 
     # Next block
     fig = plt.figure(figsize=(12, 12))
@@ -277,5 +325,6 @@ def main(content):
     return 0
 
     # return img
+originalImg = None
 originalImgSmall = None
 resultsCollection= None

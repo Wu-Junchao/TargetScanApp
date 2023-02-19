@@ -35,12 +35,13 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.targetscan.MainActivity.Companion.REQUEST_CODE_PERMISSIONS
+import com.example.targetscan.databinding.ActivityTakePhoto2Binding
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class TakePhoto2 : AppCompatActivity() {
-    lateinit var binding: ActivityTakePhoto1Binding
+    lateinit var binding: ActivityTakePhoto2Binding
     val takePhoto = 1
     lateinit var imageUri: Uri
     lateinit var outputImage: File
@@ -96,7 +97,7 @@ class TakePhoto2 : AppCompatActivity() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-//                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
                 }
 
             imageCapture = ImageCapture.Builder().setFlashMode(FLASH_MODE_ON).setCaptureMode(
@@ -196,7 +197,7 @@ class TakePhoto2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTakePhoto1Binding.inflate(layoutInflater)
+        binding = ActivityTakePhoto2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar2)
@@ -216,7 +217,7 @@ class TakePhoto2 : AppCompatActivity() {
         val editor = access.edit()
         var totalNum = access.getInt("totalNum", -1)
 
-//        binding.cameraPreview.scaleType = PreviewView.ScaleType.FIT_CENTER
+        binding.cameraPreview.scaleType = PreviewView.ScaleType.FIT_CENTER
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()

@@ -18,12 +18,13 @@
         android:id="@+id/imageView_process"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:scaleType="fitCenter"
         android:layout_gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_photoProcess"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/targetNumWrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar_photoProcess" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -375,13 +376,21 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/processLaterButton"
+        android:text="process later"
+        app:layout_constraintTop_toBottomOf="@id/allScoreWrap"
+        app:layout_constraintBottom_toTopOf="@id/confirm_editedResult"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/confirm_editedResult"
         android:text="process"
-        app:layout_constraintTop_toBottomOf="@id/allScoreWrap"
+        app:layout_constraintTop_toBottomOf="@id/processLaterButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
