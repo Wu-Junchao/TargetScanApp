@@ -228,15 +228,18 @@ class PhotoProcess : AppCompatActivity() {
         var buttonList = arrayOf<Button>(binding.scoreName1,binding.scoreName2,binding.scoreName3,binding.scoreName4,binding.scoreName5,binding.scoreName6,binding.scoreName7,binding.scoreName8,binding.scoreName9,binding.scoreName10)
         for (i in buttonList.indices){
             buttonList[i].setOnClickListener {
-                if(!Python.isStarted()){
-                    Python.start(AndroidPlatform(this))
+                if(Python.isStarted() && !editonly){
+                    val py = Python.getInstance()
+                    val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",i).toJava(ByteArray::class.java)
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+                    val vector = py.getModule("imageProcess").callAttr("getCertainVector",i).toJava(String::class.java)
+                    Log.d("wu",vector)
+                    binding.imageViewProcess.setImageBitmap(bitmap)
                 }
-
-                val py = Python.getInstance()
-                val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",i).toJava(ByteArray::class.java)
-
-                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                binding.imageViewProcess.setImageBitmap(bitmap)
+                else{
+                    Toast.makeText(this, "The target image is not available.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

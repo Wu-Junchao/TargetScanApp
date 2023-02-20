@@ -2,12 +2,13 @@ import numpy as np
 import io
 import cv2
 import matplotlib.pyplot as plt
+import math
 
 class OneTarget(object):
     radiusSet=[x/2 for x in (12.92,20.23,27.55,34.86,42.18,51.39)]
     bulletSize=5.6/2
 
-    def __init__(self,maskedImageCut,originalImageCut,contours,CROPPED_SCALED_WIDTH) -> None:
+    def __init__(self,maskedImageCut,originalImageCut,contours,CROPPED_SCALED_WIDTH,angle) -> None:
         self.maskedImageCut = maskedImageCut.copy()
         self.originalImageCut=originalImageCut.copy()
         # filtered contours, each represent a contour
@@ -20,6 +21,8 @@ class OneTarget(object):
         self.maxLocation = (0,0)
         self.dist_in_rw = -1    # distance from edge to center in real world scale
         self.score=1
+        self.vector = (0,0)
+        self.angle = angle
         for contour in contours:
             radius,(x,y) = self.calculateCenterLocation(contour)
             if radius<self.minRadius:
@@ -28,6 +31,7 @@ class OneTarget(object):
             if radius>self.maxRadius:
                 self.maxRadius=radius
                 self.maxLocation = (x,y)
+        self.vector = (self.minLocation[0]-self.maxLocation[0],self.minLocation[1]-self.maxLocation[1])
         self.labelImage()
         self.calculateScore()
 
@@ -88,7 +92,7 @@ def resize2Width(w,img):
     dim = (width, height)
     return cv2.resize(img,dim,interpolation = cv2.INTER_AREA)
 
-def simpleEllipse2Circle(img, a, b, angle):
+def simpleEllipse2Circle(img, a, b, angle,publicDegree):
     """
     args:
        img:
@@ -107,6 +111,7 @@ def simpleEllipse2Circle(img, a, b, angle):
     M[1,2] = M[1,2] * scale
     transform = M[:, 0:2]
     circle_out = cv2.warpAffine(img, M, (w, h), borderValue=255)
+    circle_out = cv2.warpAffine(circle_out, cv2.getRotationMatrix2D((w/2, h/2), -angle+publicDegree, 1), (w, h), borderValue=255)
     return circle_out
 
 def getLocation(distanceCollect,height,width):
@@ -149,6 +154,14 @@ def getCertainOriginalImageCut(index):
     else:
         return io.BytesIO().getvalue()
 
+def getCertainVector(index):
+    global resultsCollection
+    size = len(resultsCollection)
+    if index<size and index>=0:
+        s = str(resultsCollection[index].vector[0])+","+str(resultsCollection[index].vector[1])
+        return s
+    else:
+        return "?"
 
 def getCertainMaskedImageCut(index):
     global resultsCollection
@@ -244,8 +257,14 @@ def main(content):
         indexArray = getLocation(distanceCollect,height,width)
         newContoursFiltered=[]
         n=0
+        p1=(0,0)
+        p2=(0,0)
         for i in indexArray:
             (x,y),radius = cv2.minEnclosingCircle(contoursFiltered[i])
+            if n==0:
+                p1=(x,y)
+            elif n==3:
+                p2=(x,y)
             newContoursFiltered.append(contoursFiltered[i])
             center = (int(x),int(y))
             radius = int(radius)
@@ -256,7 +275,18 @@ def main(content):
             plt.imshow(cv2.putText(originalImgSmall, str(n+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
             n+=1
         contoursFiltered=newContoursFiltered.copy()
+    # Difference in x coordinates
+    dx = p2[0] - p1[0]
 
+    # Difference in y coordinates
+    dy = p2[1] - p1[1]
+
+    # Angle between p1 and p2 in radians
+    if len(contoursFiltered)==10:
+        # enable degree fix only if there are 10 targets.
+        publicDegree =math.degrees(math.atan2(dy, dx))-90
+    else:
+        publicDegree=0
     # Next block
     fig = plt.figure(figsize=(12, 12))
 
@@ -289,12 +319,12 @@ def main(content):
             originImageCut = originalImg[cord_y-radius:cord_y+radius,cord_x-radius:cord_x+radius]
             maskedCenter=masked[cord_y-radius:cord_y+radius,cord_x-radius:cord_x+radius]
             maskedCenter=cv2.copyMakeBorder(maskedCenter, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, cv2.BORDER_REPLICATE)
-            maskedCenter =simpleEllipse2Circle(maskedCenter,a,b,angle)
+            maskedCenter =simpleEllipse2Circle(maskedCenter,a,b,angle,publicDegree)
             maskedCenter = cv2.morphologyEx(maskedCenter, cv2.MORPH_OPEN, kernel[kernelSwitch])
             maskedCenter=resize2Width(CROPPED_SCALED_WIDTH,maskedCenter)
 
             originImageCut=cv2.copyMakeBorder(originImageCut, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, cv2.BORDER_REPLICATE)
-            originImageCut =simpleEllipse2Circle(originImageCut,a,b,angle)
+            originImageCut =simpleEllipse2Circle(originImageCut,a,b,angle,publicDegree)
             originImageCut = resize2Width(CROPPED_SCALED_WIDTH,originImageCut)
 
             smallContours, hierarchy = cv2.findContours(maskedCenter, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
@@ -312,7 +342,7 @@ def main(content):
             kernelSwitch+=1
 
 
-        resultsCollection.append(OneTarget(maskedCenter,originImageCut,smallContoursFiltered,CROPPED_SCALED_WIDTH))
+        resultsCollection.append(OneTarget(maskedCenter,originImageCut,smallContoursFiltered,CROPPED_SCALED_WIDTH,angle))
         fig.add_subplot(2,contourSize,i)
         plt.imshow(maskedCenter,cmap='gray')
         # print(numberOfContours)
