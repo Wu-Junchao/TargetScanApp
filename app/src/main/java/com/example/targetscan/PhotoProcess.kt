@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.contentValuesOf
 import com.chaquo.python.Python
@@ -32,7 +33,8 @@ class PhotoProcess : AppCompatActivity() {
     private var targetNum =10
     private var scoreList = arrayOf<Int>()
     private var editonly = false
-
+    private lateinit var mTask:MyAsyncTask
+    private var working = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotoProcessBinding.inflate(layoutInflater)
@@ -80,20 +82,14 @@ class PhotoProcess : AppCompatActivity() {
                 scoreTextList[i].setText(scores[i])
             }
         }
+        mTask = MyAsyncTask()
         binding.confirmEditedResult.setOnClickListener {
-            if (binding.allScoreWrap.visibility == INVISIBLE){
-
-                binding.confirmEditedResult.text="Waiting..."
-
-                imageProcessWrap(imageUri)
-
-                binding.allScoreWrap.visibility= VISIBLE
-                binding.targetNumWrap.visibility= VISIBLE
-                binding.confirmEditedResult.text="confirm"
-                binding.processLaterButton.visibility= GONE
-            }
-            else{
-                confirmResult()
+            if (!working) {
+                if (binding.allScoreWrap.visibility == INVISIBLE) {
+                    mTask.execute()
+                } else {
+                    confirmResult()
+                }
             }
         }
 
@@ -113,21 +109,26 @@ class PhotoProcess : AppCompatActivity() {
         if (resultSuccess==0) {
             val bytes = py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper")
                 .toJava(ByteArray::class.java)
-            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            targetNum =
-                py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java)
-                    .toInt()
-            binding.targetNumInput.setText(targetNum.toString())
-            binding.imageViewProcess.setImageBitmap(bitmap)
-            for (i in 0 until targetNum) {
-                val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
-                    .toJava(String::class.java).toInt()
-                scoreTextList[i].setText(result.toString())
+            targetNum =py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java).toInt()
+
+            runOnUiThread {
+                // Stuff that updates the UI
+                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                binding.targetNumInput.setText(targetNum.toString())
+                binding.imageViewProcess.setImageBitmap(bitmap)
+                for (i in 0 until targetNum) {
+                    val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
+                        .toJava(String::class.java).toInt()
+                    scoreTextList[i].setText(result.toString())
+                }
             }
+
         }
         else{
-            binding.targetNumInput.setText("0")
-            targetNum=0
+            runOnUiThread{
+                binding.targetNumInput.setText("0")
+                targetNum=0
+            }
         }
 
     }
@@ -156,9 +157,6 @@ class PhotoProcess : AppCompatActivity() {
         }
         // Add to SQLite database
         imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum) } }
-
-//        val intent = Intent(this,MainActivity::class.java)
-//        startActivity(intent)
         finish()
     }
 
@@ -212,6 +210,7 @@ class PhotoProcess : AppCompatActivity() {
 
     private fun setButtons(){
         binding.processLaterButton.setOnClickListener {
+            mTask.cancel(true)
             finish()
         }
         binding.fullImgButton.setOnClickListener {
@@ -241,5 +240,41 @@ class PhotoProcess : AppCompatActivity() {
             }
         }
 
+    }
+    inner class MyAsyncTask :AsyncTask<String, Int, Int>(){
+        private var startTime :Long = 0
+        private var endTime :Long = 0
+        override fun onPreExecute() {
+            super.onPreExecute()
+            binding.confirmEditedResult.text="Waiting..."
+            working=true
+            startTime = System.currentTimeMillis()
+        }
+        override fun doInBackground(vararg params: String?): Int {
+            imageProcessWrap(imageUri)
+            return 0
+        }
+
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+            endTime = System.currentTimeMillis()
+            Log.d("wu","Time used: "+((endTime-startTime)/1000).toString())
+            working=false
+            binding.allScoreWrap.visibility= VISIBLE
+            binding.targetNumWrap.visibility= VISIBLE
+            binding.confirmEditedResult.text="confirm"
+            binding.processLaterButton.visibility= GONE
+        }
+
+        override fun onCancelled() {
+            super.onCancelled()
+            binding.confirmEditedResult.text="process"
+            working=false
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mTask.cancel(true)
     }
 }
