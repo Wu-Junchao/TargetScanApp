@@ -21,10 +21,23 @@
             android:id="@+id/toolbar"
             android:background="?colorPrimary"/>
 
+        <Button
+            android:id="@+id/monthSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="month" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/shootingHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noRecordText"
+            android:text="No record in this month."/>
+
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -14,8 +14,13 @@ import android.Manifest
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var dateRecord = ArrayList<DateRecord>()
     private var year = "2023"
     private var month = "02"
+    private lateinit var calendar:Calendar
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar, menu)
@@ -98,8 +104,10 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("totalNum",0)
             editor.apply()
         }
-
-        setupAdapter(access)
+        calendar = Calendar.getInstance()
+        year = calendar.get(Calendar.YEAR).toString()
+        month = formatMonth(calendar.get(Calendar.MONTH))
+        setupAdapter(year,month)
 
         initializeDatabase()
 
@@ -107,12 +115,39 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,FillInformation::class.java)
             startActivity(intent)
         }
+
+        binding.monthSelector.setOnClickListener {
+
+            val dialog = MonthYearPickerDialog.Builder(
+                context = this,
+                themeResId = R.style.Style_MonthYearPickerDialog,
+                onDateSetListener = { y, m ->
+                    // To something
+                    year = y.toString()
+                    month = formatMonth(m)
+                    Log.d("wu",year)
+                    Log.d("wu",month)
+                    setupAdapter(year,month)
+                },
+                selectedYear = calendar.get(Calendar.YEAR),
+                selectedMonth = calendar.get(Calendar.MONTH)
+
+            )
+                .setMinMonth(Calendar.JANUARY)
+                .setMinYear(2022)
+                .setMaxMonth(calendar.get(Calendar.MONTH))
+                .setMaxYear(calendar.get(Calendar.YEAR))
+                .build()
+            dialog.setTitle("")
+            dialog.setCustomTitle(layoutInflater.inflate(R.layout.header, null))
+            MonthPickerDialogFragment.newInstance(dialog)
+                .showNow(supportFragmentManager, MonthPickerDialogFragment::class.java.simpleName)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-        setupAdapter(access)
+        setupAdapter(year,month)
     }
 
     private fun initializeDatabase(){
@@ -120,35 +155,46 @@ class MainActivity : AppCompatActivity() {
         dbHelper.writableDatabase
     }
 
-    private fun setupAdapter(access: SharedPreferences){
+    private fun setupAdapter(year:String,month:String){
         // Read all images name
         var photoList = externalCacheDir?.list()
-        var DateCorr = mutableMapOf<String,Int>()
+        var dateCorr = mutableMapOf<String,Int>()
         if (photoList.isNullOrEmpty()){
             photoList = arrayOf<String>()
         }
         else{
             for (photo in photoList){
                 if (photo.slice(1..4) == year && photo.slice(6..7)==month){
-                    if (DateCorr.containsKey(photo.slice(1..10))){
-                        DateCorr[photo.slice(1..10)]=DateCorr[photo.slice(1..10)]!!+1
+                    if (dateCorr.containsKey(photo.slice(1..10))){
+                        dateCorr[photo.slice(1..10)]=dateCorr[photo.slice(1..10)]!!+1
                     }
                     else{
-                        DateCorr[photo.slice(1..10)]=1
+                        dateCorr[photo.slice(1..10)]=1
                     }
                 }
 
             }
         }
 
+        binding.shootingHistory.isVisible = !dateCorr.isNullOrEmpty()
+        binding.noRecordText.isVisible = dateCorr.isNullOrEmpty()
 
         dateRecord=ArrayList<DateRecord>()
-        for (i in DateCorr.keys){
-            dateRecord.add(DateRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,DateCorr[i]!!))
+        for (i in dateCorr.keys){
+            dateRecord.add(DateRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,dateCorr[i]!!))
         }
         val layoutManager = LinearLayoutManager(this)
         binding.shootingHistory.layoutManager = layoutManager
         val adapter = DateRecordAdapter(dateRecord)
         binding.shootingHistory.adapter = adapter
+    }
+    private fun formatMonth(month:Int):String{
+        val m = month+1
+        val back =if (m in 1..9){
+            "0$m"
+        } else{
+            "$m"
+        }
+        return back
     }
 }
