@@ -16,7 +16,7 @@ import java.util.Date
 private var selectedIndex:Int = 0
 class FillInformation : AppCompatActivity() {
     lateinit var binding:ActivityFillInformationBinding
-    lateinit var myDateList:MutableList<String>
+    lateinit var disciplineList:MutableList<String>
     lateinit var outputImage: File
     var nextID=1
 
@@ -68,7 +68,7 @@ class FillInformation : AppCompatActivity() {
         binding.commentInput.setText(comment)
 
         supportActionBar?.title = "Entering information"
-        myDateList = mutableListOf<String>("Rifle shoot","Test")
+        disciplineList = mutableListOf<String>("Rifle shoot","Test")
         initSpinner(index)
         initDateSelector(year,month-1,day)
 
@@ -96,8 +96,6 @@ class FillInformation : AppCompatActivity() {
         binding.cancelBtn.setOnClickListener {
             removeEmptyPhoto()
 
-            intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }
@@ -112,7 +110,7 @@ class FillInformation : AppCompatActivity() {
      }
 
     private fun initSpinner(index:Int){
-        var starAdapter = ArrayAdapter<String>(this,R.layout.item_select,myDateList)
+        var starAdapter = ArrayAdapter<String>(this,R.layout.item_select,disciplineList)
         starAdapter.setDropDownViewResource(R.layout.item_dropdown)
         var sp = binding.disciplineSelect
         sp.prompt="choose a discipline"

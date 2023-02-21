@@ -9,7 +9,7 @@ import androidx.core.content.contentValuesOf
 import com.example.targetscan.databinding.EditCommentBinding
 class EditComment : AppCompatActivity() {
     lateinit var binding:EditCommentBinding
-    lateinit var myDateList : MutableList<String>
+    lateinit var disciplineList: MutableList<String>
     var imgName:String = ""
     var comment:String = ""
 
@@ -22,7 +22,7 @@ class EditComment : AppCompatActivity() {
         //restart Parameter
         imgName = intent.getStringExtra("imgName").toString()
         supportActionBar?.title = "Edit Existing Record"
-        myDateList = mutableListOf<String>("Rifle shoot","Test")
+        disciplineList= mutableListOf<String>("Rifle shoot","Test")
 
         showInfo(imgName)
 
@@ -63,8 +63,12 @@ class EditComment : AppCompatActivity() {
 
     @SuppressLint("Range")
     private fun showInfo(imgName:String){
-        binding.disciplineText.text = "Discipline: ${myDateList[imgName.slice(0..0).toInt()]}"
-        binding.dateText.text = imgName.slice(1..10)
+        var str = ""
+        str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n\n"
+        str += "Date: ${imgName.slice(1..10)}\n\n"
+        str += "ID: ${imgName.slice(11..13)}"
+        binding.disciplineText.text = str
+
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         if (access.getString(imgName,"")=="Processed"){
             binding.commentInput.setText(getComment(imgName))

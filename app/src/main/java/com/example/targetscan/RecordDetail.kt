@@ -43,16 +43,7 @@ class RecordDetail : AppCompatActivity() {
             finish()
         }
 
-        if (imgProcessLabel!="Processed"){
-            val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-            binding.InformationCollect.text=access.getString(imgName,"")
-            binding.ScoreCollect.visibility= INVISIBLE
-        }
-        else {
-            binding.processButton.text="edit"
-            flg=true
-            displayData(imgName)
-        }
+        displayInfo()
 
 
         binding.backButton.setOnClickListener{
@@ -108,11 +99,16 @@ class RecordDetail : AppCompatActivity() {
         cursor.close()
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun displayInfo(){
         if (imgProcessLabel!="Processed"){
+            var str = ""
+            str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n\n"
+            str += "Date: ${imgName.slice(1..10)}\n\n"
+            str += "ID: ${imgName.slice(11..13)}\n\n"
             val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-            binding.InformationCollect.text=access.getString(imgName,"")
+            val comment = access.getString(imgName,"")
+            str += "Comment: ${comment}"
+            binding.InformationCollect.text=str
             binding.ScoreCollect.visibility= INVISIBLE
         }
         else {
@@ -120,5 +116,9 @@ class RecordDetail : AppCompatActivity() {
             flg=true
             displayData(imgName)
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        displayInfo()
     }
 }
