@@ -35,6 +35,12 @@ class PhotoProcess : AppCompatActivity() {
     private var editonly = false
     private lateinit var mTask:MyAsyncTask
     private var working = false
+    private var vectorCollect :Array<String> = arrayOf<String>()
+    private var resultCollect:Array<Int> = arrayOf<Int>()
+//    private lateinit var mTask2: MyAsyncTask2
+    private var base = 0
+    private var scores = arrayOf(String())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotoProcessBinding.inflate(layoutInflater)
@@ -75,14 +81,18 @@ class PhotoProcess : AppCompatActivity() {
             binding.targetNumWrap.visibility= VISIBLE
             binding.confirmEditedResult.text="confirm"
             binding.processLaterButton.visibility= GONE
-            val scores = getScore(imgName!!)
+            scores = getWhat(imgName!!,"scores",",")
             targetNum =scores.size
             binding.targetNumInput.setText(targetNum.toString())
+            val vectorsHold = getWhat(imgName!!,"vectors",".")
             for (i in 0 until targetNum) {
                 scoreTextList[i].setText(scores[i])
+                vectorCollect+=vectorsHold[i]
             }
         }
         mTask = MyAsyncTask()
+//        mTask2=MyAsyncTask2()
+//        mTask2.execute()
         binding.confirmEditedResult.setOnClickListener {
             if (!working) {
                 if (binding.allScoreWrap.visibility == INVISIBLE) {
@@ -111,6 +121,10 @@ class PhotoProcess : AppCompatActivity() {
                 .toJava(ByteArray::class.java)
             targetNum =py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java).toInt()
 
+            for (i in 0 until targetNum){
+                vectorCollect += py.getModule("imageProcess").callAttr("getCertainVector",i).toJava(String::class.java)
+            }
+
             runOnUiThread {
                 // Stuff that updates the UI
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -119,10 +133,10 @@ class PhotoProcess : AppCompatActivity() {
                 for (i in 0 until targetNum) {
                     val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
                         .toJava(String::class.java).toInt()
+                    resultCollect+=result
                     scoreTextList[i].setText(result.toString())
                 }
             }
-
         }
         else{
             runOnUiThread{
@@ -144,6 +158,12 @@ class PhotoProcess : AppCompatActivity() {
             var score=scoreTextList[i].text.toString().toInt()
 //            Log.d("wu",score.toString())
             if (score in 0..10){
+                if (!editonly && score!=resultCollect[i]){
+                    vectorCollect[i]="999,999"
+                }
+                else if (editonly && score!=scores[i].toInt() ){
+                    vectorCollect[i]="999,999"
+                }
                 scoreList+=score
             }
             else{
@@ -152,11 +172,14 @@ class PhotoProcess : AppCompatActivity() {
                 return
             }
         }
+
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        comment = access.getString(imgName,"")
         if (comment.isNullOrBlank()){
             comment = ""
         }
         // Add to SQLite database
-        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum) } }
+        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum,vectorCollect) } }
         finish()
     }
 
@@ -166,13 +189,30 @@ class PhotoProcess : AppCompatActivity() {
             output+=i.toString()
             output+=","
         }
+        if (output.isNotEmpty()){
+            output = output.dropLast(1)
+        }
         Log.d("wu",output)
-        return output.dropLast(1)
+        return output
     }
-    private fun add2Database(imgName:String, scoreList: Array<Int>, comment:String, index:Int, year:Int, month: Int, day:Int,targetNum:Int){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
+
+    private fun list2Str2(scoreList: Array<String>):String{
+        var output = ""
+        for (i in scoreList){
+            output+=i
+            output+="."
+        }
+        if (output.isNotEmpty()){
+            output = output.dropLast(1)
+        }
+        Log.d("wu",output)
+        return output
+    }
+
+    private fun add2Database(imgName:String, scoreList: Array<Int>, comment:String, index:Int, year:Int, month: Int, day:Int,targetNum:Int,vectorCollect:Array<String>){
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
         val db = dbHelper.writableDatabase
-        val values = contentValuesOf("filename" to imgName,"discipline" to index,"year" to year,"month" to month,"day" to day,"comment" to comment,"targetNum" to targetNum,"scores" to list2Str(scoreList))
+        val values = contentValuesOf("filename" to imgName,"discipline" to index,"year" to year,"month" to month,"day" to day,"comment" to comment,"targetNum" to targetNum,"scores" to list2Str(scoreList),"vectors" to list2Str2(vectorCollect))
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
         if (cursor.count>0){
@@ -189,8 +229,8 @@ class PhotoProcess : AppCompatActivity() {
     }
 
     @SuppressLint("Range")
-    private fun getScore(imgName:String):Array<String>{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
+    private fun getWhat(imgName:String,what:String,split:String):Array<String>{
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
         val db = dbHelper.readableDatabase
 
         var scores=""
@@ -199,18 +239,19 @@ class PhotoProcess : AppCompatActivity() {
         if (cursor.moveToFirst()){
             do{
 
-                scores = cursor.getString(cursor.getColumnIndex("scores"))
+                scores = cursor.getString(cursor.getColumnIndex(what))
 //                Log.d("wu",displayText)
             } while (cursor.moveToNext())
         }
         db.close()
         cursor.close()
-        return scores.split(",").toTypedArray()
+        return scores.split(split).toTypedArray()
     }
 
     private fun setButtons(){
         binding.processLaterButton.setOnClickListener {
             mTask.cancel(true)
+//            mTask2.cancel(true)
             finish()
         }
         binding.fullImgButton.setOnClickListener {
@@ -252,8 +293,10 @@ class PhotoProcess : AppCompatActivity() {
             binding.confirmEditedResult.text="Waiting..."
             working=true
             startTime = System.currentTimeMillis()
+
         }
         override fun doInBackground(vararg params: String?): Int {
+
             imageProcessWrap(imageUri)
             return 0
         }
@@ -276,8 +319,39 @@ class PhotoProcess : AppCompatActivity() {
         }
     }
 
+    inner class MyAsyncTask2 :AsyncTask<String, Int, Int>(){
+        override fun onPreExecute() {
+            super.onPreExecute()
+
+        }
+        override fun doInBackground(vararg params: String?): Int {
+            while (true){
+                runOnUiThread {
+                    binding.hintText.text = "Time used: $base seconds."
+                }
+                Thread.sleep(1_000)
+                base+=1
+            }
+
+            return 0
+        }
+
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+            base=0
+            binding.hintText.visibility= INVISIBLE
+        }
+
+        override fun onCancelled() {
+            super.onCancelled()
+            base=0
+            binding.hintText.visibility= INVISIBLE
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mTask.cancel(true)
+//        mTask2.cancel(true)
     }
 }

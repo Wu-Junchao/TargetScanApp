@@ -12,7 +12,7 @@
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="7e1222d5-5ede-43ae-8c41-7c98ae4e7f20">
+    <connection id="49262f47-7543-4aaf-b11b-455363ea9ac7">
       <console name="Connection" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
@@ -23,11 +23,7 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="7e1222d5-5ede-43ae-8c41-7c98ae4e7f20" dataset="main.ShootingRecords" active-filter-id="0305529e-3e59-46df-bc9e-24f64e7c29c1">
-      <filter id="0305529e-3e59-46df-bc9e-24f64e7c29c1" name="&quot;02023-02-13001.jpg&quot;" temporary="false" custom-name="false" type="basic" join-type="AND">
-        <condition column="filename" operator="=" value="&quot;02023-02-13001.jpg&quot;" active="true" />
-      </filter>
-    </filter-actions>
+    <filter-actions connection-id="49262f47-7543-4aaf-b11b-455363ea9ac7" dataset="main.ShootingRecords" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
@@ -46,7 +42,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="7e1222d5-5ede-43ae-8c41-7c98ae4e7f20" active="true" signed="true">
+      <connection id="49262f47-7543-4aaf-b11b-455363ea9ac7" active="true" signed="true">
         <database>
           <name value="Connection" />
           <description value="" />

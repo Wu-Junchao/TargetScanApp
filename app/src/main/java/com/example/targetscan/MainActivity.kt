@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeDatabase(){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
         dbHelper.writableDatabase
     }
 

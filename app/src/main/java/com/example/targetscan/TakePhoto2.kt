@@ -272,7 +272,7 @@ class TakePhoto2 : AppCompatActivity() {
         binding.confirmPhotoBtn.setOnClickListener {
             editor.putString(
                 "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg",
-                "NotYetProcessed"
+                comment
             )
             totalNum += 1
             editor.putInt("totalNum", totalNum)

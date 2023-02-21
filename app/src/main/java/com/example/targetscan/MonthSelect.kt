@@ -84,7 +84,14 @@ class MonthSelect : AppCompatActivity() {
         else{
             for (photo in photoList){
                 if (photo.slice(1..4) == date.slice(0..3) && photo.slice(6..7)==date.slice(5..6) && photo.slice(9..10)==date.slice(8..9)){
-                    photoCorr[photo] =access.getString(photo,"NotYetProcessed")!!
+                    val v = access.getString(photo,"NotYetProcessed")
+                    if (v=="Processed"){
+                        photoCorr[photo] = v
+                    }
+                    else{
+                        photoCorr[photo] = "Not yet processed."
+                    }
+
                 }
             }
         }

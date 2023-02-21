@@ -1,6 +1,7 @@
 package com.example.targetscan
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -18,24 +19,22 @@ class RecordDetail : AppCompatActivity() {
     var displayText = ""
     val disciplineList = mutableListOf<String>("Rifle shoot","Test")
     var flg = false
+    var imgName = ""
+    var imgProcessLabel = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val imgName = intent.getStringExtra("name")
-        val imgProcessLabel = intent.getStringExtra("processLabel")
+        imgName = intent.getStringExtra("name").toString()
+        imgProcessLabel = intent.getStringExtra("processLabel").toString()
         binding = ActivityRocordDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         setSupportActionBar(binding.toolbarRecordDetail)
         supportActionBar?.title = "Record Details"
 
-        outputImage = File(externalCacheDir,imgName!!)
+        outputImage = File(externalCacheDir,imgName)
         if (outputImage.exists()){
-            imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            imageUri =
                 FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
-            }else{
-                Uri.fromFile(outputImage)
-            }
             binding.imageDetail.setImageURI(imageUri)
         }
         else{
@@ -44,24 +43,28 @@ class RecordDetail : AppCompatActivity() {
             finish()
         }
 
-            if (imgProcessLabel!="Processed"){
-                binding.InformationCollect.text="Not yet processed"
-                binding.ScoreCollect.visibility= INVISIBLE
-            }
-            else {
-//                binding.processButton.visibility=GONE
-                binding.processButton.text="edit"
-                flg=true
-                displayData(imgName)
-            }
+        if (imgProcessLabel!="Processed"){
+            val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+            binding.InformationCollect.text=access.getString(imgName,"")
+            binding.ScoreCollect.visibility= INVISIBLE
+        }
+        else {
+            binding.processButton.text="edit"
+            flg=true
+            displayData(imgName)
+        }
 
 
         binding.backButton.setOnClickListener{
-            intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+//            intent = Intent(this,MainActivity::class.java)
+//            startActivity(intent)
             finish()
         }
-
+        binding.editCommentButton.setOnClickListener {
+            intent = Intent(this,EditComment::class.java)
+            intent.putExtra("imgName",imgName)
+            startActivity(intent)
+        }
         binding.processButton.setOnClickListener {
             val intent = Intent(this,PhotoProcess::class.java)
             intent.putExtra("ImgName",imgName)
@@ -69,20 +72,20 @@ class RecordDetail : AppCompatActivity() {
                 intent.putExtra("editonly",true)
             }
             startActivity(intent)
-            finish()
         }
 
     }
 
     @SuppressLint("Range")
     private fun displayData(imgName:String){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
         val db = dbHelper.readableDatabase
 
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
         if (cursor.moveToFirst()){
             do{
+                displayText=""
                 displayText+="Discipline: "
                 displayText+= disciplineList[cursor.getInt(cursor.getColumnIndex("discipline"))]
                 displayText+="\nDate: "
@@ -92,6 +95,10 @@ class RecordDetail : AppCompatActivity() {
                 displayText+="\n"
                 displayText+="Comment: "
                 displayText+=cursor.getString(cursor.getColumnIndex("comment"))
+
+                displayText+="\nVectors: "
+                displayText+=cursor.getString(cursor.getColumnIndex("vectors"))
+
                 binding.InformationCollect.text=displayText
                 binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
 //                Log.d("wu",displayText)
@@ -101,4 +108,17 @@ class RecordDetail : AppCompatActivity() {
         cursor.close()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (imgProcessLabel!="Processed"){
+            val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+            binding.InformationCollect.text=access.getString(imgName,"")
+            binding.ScoreCollect.visibility= INVISIBLE
+        }
+        else {
+            binding.processButton.text="edit"
+            flg=true
+            displayData(imgName)
+        }
+    }
 }

@@ -94,9 +94,6 @@ class FillInformation : AppCompatActivity() {
             }
         }
         binding.cancelBtn.setOnClickListener {
-            val year = binding.dateInput.year
-            val month = binding.dateInput.month+1
-            val day = binding.dateInput.dayOfMonth
             removeEmptyPhoto()
 
             intent = Intent(this,MainActivity::class.java)
