@@ -204,6 +204,9 @@ class PhotoProcess : AppCompatActivity() {
 
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         comment = access.getString(imgName,"")
+        if (comment==getString(R.string.processed_text)){
+            comment = getComment(imgName!!)
+        }
         if (comment.isNullOrBlank()){
             comment = ""
         }
@@ -260,6 +263,24 @@ class PhotoProcess : AppCompatActivity() {
     }
 
     @SuppressLint("Range")
+    private fun getComment(imgName:String):String{
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val db = dbHelper.readableDatabase
+
+        var scores=""
+        val cursor = db.query("ShootingRecords",null,"filename = ?",
+            arrayOf<String>(imgName),null,null,null)
+        if (cursor.moveToFirst()){
+            do{
+                comment = cursor.getString(cursor.getColumnIndex("comment"))
+//                Log.d("wu",displayText)
+            } while (cursor.moveToNext())
+        }
+        db.close()
+        cursor.close()
+        return comment.toString()
+    }
+    @SuppressLint("Range")
     private fun getWhat(imgName:String,what:String,split:String):Array<String>{
         val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
         val db = dbHelper.readableDatabase
@@ -269,7 +290,6 @@ class PhotoProcess : AppCompatActivity() {
             arrayOf<String>(imgName),null,null,null)
         if (cursor.moveToFirst()){
             do{
-
                 scores = cursor.getString(cursor.getColumnIndex(what))
 //                Log.d("wu",displayText)
             } while (cursor.moveToNext())
