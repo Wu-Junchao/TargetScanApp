@@ -37,7 +37,6 @@ class PhotoProcess : AppCompatActivity() {
     private var working = false
     private var vectorCollect :Array<String> = arrayOf<String>()
     private var resultCollect:Array<Int> = arrayOf<Int>()
-//    private lateinit var mTask2: MyAsyncTask2
     private var base = 0
     private var scores = arrayOf(String())
 
@@ -91,8 +90,7 @@ class PhotoProcess : AppCompatActivity() {
             }
         }
         mTask = MyAsyncTask()
-//        mTask2=MyAsyncTask2()
-//        mTask2.execute()
+
         binding.confirmEditedResult.setOnClickListener {
             if (!working) {
                 if (binding.allScoreWrap.visibility == INVISIBLE) {
@@ -131,10 +129,16 @@ class PhotoProcess : AppCompatActivity() {
                 binding.targetNumInput.setText(targetNum.toString())
                 binding.imageViewProcess.setImageBitmap(bitmap)
                 for (i in 0 until targetNum) {
-                    val result = 10 + py.getModule("imageProcess").callAttr("getCertainScore", i)
+                    val score = py.getModule("imageProcess").callAttr("getCertainScore", i)
                         .toJava(String::class.java).toInt()
-                    resultCollect+=result
-                    scoreTextList[i].setText(result.toString())
+                    if (score==-999){
+                        resultCollect+=0
+                        scoreTextList[i].setText("0")
+                    }else{
+                        val result = 10 + score
+                        resultCollect+=result
+                        scoreTextList[i].setText(result.toString())
+                    }
                 }
             }
         }
@@ -149,6 +153,11 @@ class PhotoProcess : AppCompatActivity() {
     private fun confirmResult(){
         var scoreTextList = arrayOf<EditText>(binding.score1,binding.score2,binding.score3,binding.score4,binding.score5,binding.score6,binding.score7,binding.score8,binding.score9,binding.score10)
         targetNum = binding.targetNumInput.text.toString().toInt()
+        if (targetNum <1 || targetNum>10){
+            Toast.makeText(this, "target number should between 0 .. 10", Toast.LENGTH_SHORT).show()
+            scoreList = arrayOf<Int>()
+            return
+        }
         for (i in 0 until targetNum){
             if (scoreTextList[i].text.isBlank()){
                 Toast.makeText(this, "Position ${i+1}'s score is blank.", Toast.LENGTH_SHORT).show()
@@ -157,17 +166,21 @@ class PhotoProcess : AppCompatActivity() {
             }
             var score=scoreTextList[i].text.toString().toInt()
 //            Log.d("wu",score.toString())
-            if (score in 0..10){
+            if (score in 6..10){
                 if (!editonly && score!=resultCollect[i]){
                     vectorCollect[i]="999,999"
                 }
-                else if (editonly && score!=scores[i].toInt() ){
+                else if (editonly && score!=scores[i].toInt()){
                     vectorCollect[i]="999,999"
                 }
                 scoreList+=score
             }
+            else if (score == 0){
+                vectorCollect[i]="999,999"
+                scoreList+=score
+            }
             else{
-                Toast.makeText(this, "Position ${i+1}'s score is not in 0..10", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Position ${i+1}'s score is not in 6..10 or 0", Toast.LENGTH_SHORT).show()
                 scoreList = arrayOf<Int>()
                 return
             }
@@ -283,7 +296,6 @@ class PhotoProcess : AppCompatActivity() {
                 }
             }
         }
-
     }
     inner class MyAsyncTask :AsyncTask<String, Int, Int>(){
         private var startTime :Long = 0
@@ -319,39 +331,4 @@ class PhotoProcess : AppCompatActivity() {
         }
     }
 
-    inner class MyAsyncTask2 :AsyncTask<String, Int, Int>(){
-        override fun onPreExecute() {
-            super.onPreExecute()
-
-        }
-        override fun doInBackground(vararg params: String?): Int {
-            while (true){
-                runOnUiThread {
-                    binding.hintText.text = "Time used: $base seconds."
-                }
-                Thread.sleep(1_000)
-                base+=1
-            }
-
-            return 0
-        }
-
-        override fun onPostExecute(result: Int?) {
-            super.onPostExecute(result)
-            base=0
-            binding.hintText.visibility= INVISIBLE
-        }
-
-        override fun onCancelled() {
-            super.onCancelled()
-            base=0
-            binding.hintText.visibility= INVISIBLE
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mTask.cancel(true)
-//        mTask2.cancel(true)
-    }
 }

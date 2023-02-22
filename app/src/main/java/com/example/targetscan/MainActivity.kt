@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = DateRecordAdapter(dateRecord)
         binding.shootingHistory.adapter = adapter
     }
+
     private fun formatMonth(month:Int):String{
         val m = month+1
         val back =if (m in 1..9){

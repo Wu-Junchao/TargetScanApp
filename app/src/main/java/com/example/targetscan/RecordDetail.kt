@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View.INVISIBLE
 import androidx.core.content.FileProvider
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
@@ -47,8 +48,6 @@ class RecordDetail : AppCompatActivity() {
 
 
         binding.backButton.setOnClickListener{
-//            intent = Intent(this,MainActivity::class.java)
-//            startActivity(intent)
             finish()
         }
         binding.editCommentButton.setOnClickListener {
@@ -92,7 +91,7 @@ class RecordDetail : AppCompatActivity() {
 
                 binding.InformationCollect.text=displayText
                 binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
-//                Log.d("wu",displayText)
+                Log.d("wu",cursor.getString(cursor.getColumnIndex("vectors")))
             } while (cursor.moveToNext())
         }
         db.close()
@@ -100,7 +99,7 @@ class RecordDetail : AppCompatActivity() {
     }
 
     private fun displayInfo(){
-        if (imgProcessLabel!="Processed"){
+        if (imgProcessLabel!=getString(R.string.processed_text)){
             var str = ""
             str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n\n"
             str += "Date: ${imgName.slice(1..10)}\n\n"

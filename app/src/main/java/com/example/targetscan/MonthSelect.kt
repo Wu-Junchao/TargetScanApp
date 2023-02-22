@@ -48,12 +48,6 @@ class MonthSelect : AppCompatActivity() {
 
         // Initialize shared preference XML
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-        val editor = access.edit()
-
-        if (!access.contains("totalNum") ){
-            editor.putInt("totalNum",0)
-            editor.apply()
-        }
 
         setupAdapter(access)
 
@@ -69,11 +63,6 @@ class MonthSelect : AppCompatActivity() {
         setupAdapter(access)
     }
 
-    private fun initializeDatabase(){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",2)
-        dbHelper.writableDatabase
-    }
-
     private fun setupAdapter(access:SharedPreferences){
         // Read all images name
         var photoList = externalCacheDir?.list()
@@ -85,7 +74,7 @@ class MonthSelect : AppCompatActivity() {
             for (photo in photoList){
                 if (photo.slice(1..4) == date.slice(0..3) && photo.slice(6..7)==date.slice(5..6) && photo.slice(9..10)==date.slice(8..9)){
                     val v = access.getString(photo,"NotYetProcessed")
-                    if (v=="Processed"){
+                    if (v==getString(R.string.processed_text)){
                         photoCorr[photo] = v
                     }
                     else{
