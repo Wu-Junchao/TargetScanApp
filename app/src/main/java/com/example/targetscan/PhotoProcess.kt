@@ -19,6 +19,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcessBinding
 import java.io.File
+import kotlin.math.sign
 
 class PhotoProcess : AppCompatActivity() {
     private lateinit var binding:ActivityPhotoProcessBinding
@@ -167,17 +168,32 @@ class PhotoProcess : AppCompatActivity() {
             var score=scoreTextList[i].text.toString().toInt()
 //            Log.d("wu",score.toString())
             if (score in 6..10){
-                if (!editonly && score!=resultCollect[i]){
-                    vectorCollect[i]="999,999"
+                if (!editonly && i>=resultCollect.size){
+                    vectorCollect+="999,999"
                 }
-                else if (editonly && score!=scores[i].toInt()){
-                    vectorCollect[i]="999,999"
+                else if (editonly && i>=scores.size){
+                    vectorCollect+="999,999"
+                }else{
+                    if (!editonly && score!=resultCollect[i]){
+                        vectorCollect[i]="999,999"
+                    }
+                    else if (editonly && score!=scores[i].toInt()){
+                        vectorCollect[i]="999,999"
+                    }
                 }
                 scoreList+=score
             }
             else if (score == 0){
-                vectorCollect[i]="999,999"
-                scoreList+=score
+                if (!editonly && i>=resultCollect.size){
+                    vectorCollect+="999,999"
+                }
+                else if (editonly && i>=scores.size){
+                    vectorCollect+="999,999"
+                }
+                else {
+                    vectorCollect[i] = "999,999"
+                }
+                scoreList += score
             }
             else{
                 Toast.makeText(this, "Position ${i+1}'s score is not in 6..10 or 0", Toast.LENGTH_SHORT).show()
@@ -192,7 +208,9 @@ class PhotoProcess : AppCompatActivity() {
             comment = ""
         }
         // Add to SQLite database
-        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum,vectorCollect) } }
+        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum,vectorCollect.sliceArray(
+            0 until targetNum
+        )) } }
         finish()
     }
 
