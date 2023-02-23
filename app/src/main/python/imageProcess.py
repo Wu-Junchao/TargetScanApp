@@ -237,8 +237,10 @@ def main(content):
         radiusCollect.append(radius)
         distanceCollect.append((x,y))
 
+    p1=(0,0)
+    p2=(0,0)
     if len(radiusCollect)==0:
-        pass
+        return 1
     else:
         radiusCollect = np.array(radiusCollect)
         q75, q25 = np.percentile(radiusCollect, [75 ,25])
@@ -257,8 +259,7 @@ def main(content):
         indexArray = getLocation(distanceCollect,height,width)
         newContoursFiltered=[]
         n=0
-        p1=(0,0)
-        p2=(0,0)
+
         for i in indexArray:
             (x,y),radius = cv2.minEnclosingCircle(contoursFiltered[i])
             if n==0:

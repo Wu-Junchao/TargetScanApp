@@ -2,16 +2,18 @@ package com.example.targetscan
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.INVISIBLE
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
 import java.io.File
+
 
 class RecordDetail : AppCompatActivity() {
     lateinit var binding : ActivityRocordDetailBinding
@@ -48,7 +50,20 @@ class RecordDetail : AppCompatActivity() {
 
 
         binding.backButton.setOnClickListener{
-            finish()
+            val alert: AlertDialog.Builder =AlertDialog.Builder(this)
+            alert.setTitle("Delete entry")
+            alert.setMessage("Are you sure you want to delete?")
+            alert.setPositiveButton(android.R.string.yes, object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    deleteRecord(imgName)
+                    finish()
+                }
+            })
+            alert.setNegativeButton(android.R.string.no,
+                DialogInterface.OnClickListener { dialog, which -> // close dialog
+                    dialog.cancel()
+                })
+            alert.show()
         }
         binding.editCommentButton.setOnClickListener {
             intent = Intent(this,EditComment::class.java)
@@ -120,4 +135,29 @@ class RecordDetail : AppCompatActivity() {
         super.onResume()
         displayInfo()
     }
+
+    private fun deleteRecord(imgName:String){
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val db = dbHelper.writableDatabase
+        val cursor = db.query("ShootingRecords",null,"filename = ?",
+            arrayOf<String>(imgName),null,null,null)
+        if (cursor.count>0){
+            db.delete("ShootingRecords","filename = ?",arrayOf<String>(imgName))
+        }
+        db.close()
+
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        val editor = access.edit()
+        editor.remove(imgName)
+        editor.apply()
+
+        outputImage = File(
+            externalCacheDir,
+            imgName
+        )
+        if (outputImage.exists()) {
+            outputImage.delete()
+        }
+    }
+
 }
