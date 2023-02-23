@@ -73,7 +73,7 @@ class MonthSelect : AppCompatActivity() {
         else{
             for (photo in photoList){
                 if (photo.slice(1..4) == date.slice(0..3) && photo.slice(6..7)==date.slice(5..6) && photo.slice(9..10)==date.slice(8..9)){
-                    val v = access.getString(photo,"NotYetProcessed")
+                    val v = access.getString(photo,"")
                     if (v==getString(R.string.processed_text)){
                         photoCorr[photo] = v
                     }
@@ -88,7 +88,7 @@ class MonthSelect : AppCompatActivity() {
         photoCorr = photoCorr.toSortedMap()
         shootList=ArrayList<ShootRecord>()
         for (i in photoCorr.keys){
-            shootList.add(ShootRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
+            shootList.add(ShootRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[i]!!))
         }
         val layoutManager = LinearLayoutManager(this)
         binding.shootingHistory.layoutManager = layoutManager

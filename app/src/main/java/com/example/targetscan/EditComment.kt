@@ -33,7 +33,7 @@ class EditComment : AppCompatActivity() {
             }
             else{
                 val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-                if (access.getString(imgName,"")=="Processed"){
+                if (access.getString(imgName,"")==getString(R.string.processed_text)){
                     add2Database(imgName,comment)
                 }
                 else{
@@ -70,7 +70,7 @@ class EditComment : AppCompatActivity() {
         binding.disciplineText.text = str
 
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-        if (access.getString(imgName,"")=="Processed"){
+        if (access.getString(imgName,"")==getString(R.string.processed_text)){
             binding.commentInput.setText(getComment(imgName))
         }
         else{
