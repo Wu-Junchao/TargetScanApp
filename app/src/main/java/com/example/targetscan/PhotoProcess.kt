@@ -20,6 +20,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcess2Binding
 import java.io.File
+import java.util.Timer
 
 class PhotoProcess : AppCompatActivity() {
     private lateinit var binding:ActivityPhotoProcess2Binding
@@ -35,6 +36,7 @@ class PhotoProcess : AppCompatActivity() {
     private var scoreList = arrayOf<Int>()
     private var editonly = false
     private lateinit var mTask:MyAsyncTask
+    private lateinit var timerTask :TimerTask
     private var working = false
     private var vectorCollect :Array<String> = arrayOf<String>()
     private var resultCollect:Array<Int> = arrayOf<Int>()
@@ -91,11 +93,12 @@ class PhotoProcess : AppCompatActivity() {
             }
         }
         mTask = MyAsyncTask()
-
+        timerTask = TimerTask()
         binding.confirmEditedResult.setOnClickListener {
             if (!working) {
                 if (binding.allScoreWrap.visibility == INVISIBLE) {
-                    mTask.execute()
+                    mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                    timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 } else {
                     confirmResult()
                 }
@@ -299,10 +302,15 @@ class PhotoProcess : AppCompatActivity() {
         return scores.split(split).toTypedArray()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mTask.cancel(true)
+        timerTask.cancel(true)
+    }
     private fun setButtons(){
         binding.processLaterButton.setOnClickListener {
             mTask.cancel(true)
-//            mTask2.cancel(true)
+            timerTask.cancel(true)
             finish()
         }
 
@@ -371,6 +379,7 @@ class PhotoProcess : AppCompatActivity() {
 
         override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
+            timerTask.cancel(true)
             endTime = System.currentTimeMillis()
             Log.d("wu","Time used: "+((endTime-startTime)/1000).toString())
             working=false
@@ -385,9 +394,40 @@ class PhotoProcess : AppCompatActivity() {
 
         override fun onCancelled() {
             super.onCancelled()
+            timerTask.cancel(true)
             binding.confirmEditedResult.text="process"
             working=false
         }
     }
 
+    inner class TimerTask :AsyncTask<String, Int, Int>(){
+        override fun onPreExecute() {
+            super.onPreExecute()
+            base=0
+            binding.hintText.visibility= VISIBLE
+        }
+        override fun doInBackground(vararg params: String?): Int {
+            while (true){
+                runOnUiThread {
+                    binding.hintText.text ="Time used: ${base.toString()}s."
+
+                }
+                Thread.sleep(1_000)
+                base+=1
+            }
+            return 0
+        }
+
+        override fun onPostExecute(result: Int?) {
+            super.onPostExecute(result)
+            binding.hintText.visibility= INVISIBLE
+            base=0
+        }
+
+        override fun onCancelled() {
+            super.onCancelled()
+            binding.hintText.visibility= INVISIBLE
+            base=0
+        }
+    }
 }
