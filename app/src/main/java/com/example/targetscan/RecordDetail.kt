@@ -31,9 +31,8 @@ class RecordDetail : AppCompatActivity() {
     val disciplineList = mutableListOf<String>("Rifle shoot","Test")
     var flg = false
     var imgName = ""
-    var imgProcessLabel = ""
     lateinit var vectors :String
-    lateinit var parsed_vectors:Array<String>
+    lateinit var parsedVectors:Array<String>
     lateinit var originalImg:Bitmap
     lateinit var scores :String
     var arrowToggle = true
@@ -41,7 +40,6 @@ class RecordDetail : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imgName = intent.getStringExtra("name").toString()
-        imgProcessLabel = intent.getStringExtra("processLabel").toString()
         binding = ActivityRocordDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -126,7 +124,7 @@ class RecordDetail : AppCompatActivity() {
                 displayText+=cursor.getString(cursor.getColumnIndex("comment"))
                 targetNum = cursor.getInt(cursor.getColumnIndex("targetNum"))
                 vectors = cursor.getString(cursor.getColumnIndex("vectors"))
-                parsed_vectors = vectors.split(".").toTypedArray()
+                parsedVectors = vectors.split(".").toTypedArray()
                 binding.InformationCollect.text=displayText
                 scores = cursor.getString(cursor.getColumnIndex("scores"))
 //                binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
@@ -138,13 +136,14 @@ class RecordDetail : AppCompatActivity() {
     }
 
     private fun displayInfo(){
-        if (imgProcessLabel!=getString(R.string.processed_text)){
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        val comment = access.getString(imgName,"")
+        if (comment!=getString(R.string.processed_text)){
             var str = ""
             str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n"
             str += "Date: ${imgName.slice(1..10)}\n"
 //            str += "ID: ${imgName.slice(11..13)}\n"
-            val access = getSharedPreferences("data", Context.MODE_PRIVATE)
-            val comment = access.getString(imgName,"")
+
             str += "Comment: ${comment}"
             binding.InformationCollect.text=str
             binding.seekBar.visibility=GONE
@@ -263,7 +262,7 @@ class RecordDetail : AppCompatActivity() {
 //                    "Progress is: " + seek.progress ,
 //                    Toast.LENGTH_SHORT).show()
                 if (seek.progress>1){
-                    changeImage(parsed_vectors[seek.progress-2])
+                    changeImage(parsedVectors[seek.progress-2])
                 }
                 else if (seek.progress==0){
                     binding.imageDetail.setImageBitmap(originalImg)

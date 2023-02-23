@@ -14,7 +14,6 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
     inner class ViewHolder(view:View):RecyclerView.ViewHolder(view){
         val shootImage: ImageView = view.findViewById(R.id.shootingImage)
         val shootName: TextView = view.findViewById(R.id.shootingName)
-        val shootProcessLabel : TextView = view.findViewById(R.id.processLabel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,7 +27,6 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
             val intent = Intent(parent.context,RecordDetail::class.java)
             intent.putExtra("position",position)
             intent.putExtra("name",shootRecord.name)
-            intent.putExtra("processLabel",shootRecord.processLabel)
             parent.context.startActivity(intent)
 
         }
@@ -45,7 +43,6 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
         val shoot = shootList[position]
         holder.shootName.text=shoot.name
         holder.shootImage.setImageResource(shoot.imageId)
-        holder.shootProcessLabel.text = shoot.processLabel
     }
     override fun getItemCount(): Int {
         return shootList.size

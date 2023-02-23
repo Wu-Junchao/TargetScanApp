@@ -88,7 +88,7 @@ class MonthSelect : AppCompatActivity() {
         photoCorr = photoCorr.toSortedMap()
         shootList=ArrayList<ShootRecord>()
         for (i in photoCorr.keys){
-            shootList.add(ShootRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[i]!!))
+            shootList.add(ShootRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material))
         }
         val layoutManager = LinearLayoutManager(this)
         binding.shootingHistory.layoutManager = layoutManager

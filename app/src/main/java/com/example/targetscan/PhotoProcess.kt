@@ -261,7 +261,7 @@ class PhotoProcess : AppCompatActivity() {
 
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         val editor = access.edit()
-        editor.putString(imgName,"Processed")
+        editor.putString(imgName,getString(R.string.processed_text))
         editor.apply()
     }
 
