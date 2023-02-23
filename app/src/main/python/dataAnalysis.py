@@ -34,7 +34,7 @@ def drawScoreGraph(vectors,scores):
     scores = parseScore(scores)
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
     centerList = [(240,240+520*i) for i in range(2)]+ [(240,200+480*i) for i in range(2,4)]+ [(540,500),(540,1400)]+[(840,240+520*i) for i in range(2)]+[(840,200+480*i) for i in range(2,4)]
-    centerList = [centerList[i] for i in (0,6,4,1,7,2,8,5,3,9)]
+    centerList = [centerList[i] for i in (6,7,8,9,4,5,0,1,2,3)]
     if False and len(vectors)!=10:
         return
     else:
@@ -67,7 +67,7 @@ def drawArrowGraph(vectors,scores):
     scores = parseScore(scores)
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
     centerList = [(240,240+520*i) for i in range(2)]+ [(240,200+480*i) for i in range(2,4)]+ [(540,500),(540,1400)]+[(840,240+520*i) for i in range(2)]+[(840,200+480*i) for i in range(2,4)]
-    centerList = [centerList[i] for i in (0,6,4,1,7,2,8,5,3,9)]
+    centerList = [centerList[i] for i in (6,7,8,9,4,5,0,1,2,3)]
     if False:
         return
     else:
@@ -102,7 +102,7 @@ def drawCircleGraph(vector):
     vector = (int(vector[0]),int(vector[1]))
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
     centerList = [(240,240+520*i) for i in range(2)]+ [(240,200+480*i) for i in range(2,4)]+ [(540,500),(540,1400)]+[(840,240+520*i) for i in range(2)]+[(840,200+480*i) for i in range(2,4)]
-    centerList = [centerList[i] for i in (0,6,4,1,7,2,8,5,3,9)]
+    centerList = [centerList[i] for i in (6,7,8,9,4,5,0,1,2,3)]
     radiusSet=[x/2 for x in (12.92,20.23,27.55,34.86,42.18,51.39)]
     bulletSize=5.6/2
 

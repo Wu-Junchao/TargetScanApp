@@ -9,7 +9,7 @@ class OneTarget(object):
     bulletSize=5.6/2
 
     def __init__(self,maskedImageCut,originalImageCut,contours,CROPPED_SCALED_WIDTH,angle) -> None:
-        self.maskedImageCut = maskedImageCut.copy()
+        self.maskedImageCut =maskedImageCut.copy()
         self.originalImageCut=originalImageCut.copy()
         # filtered contours, each represent a contour
         self.contours = contours.copy()
@@ -122,9 +122,9 @@ def getLocation(distanceCollect,height,width):
     minx = distanceCollect[index][0]
     index =np.argmax(temp)
     maxx=distanceCollect[index][0]
-    GAP = int(maxx-minx)//5
-    for row in range(GAP,height+GAP,GAP):
-        for col in range(GAP,width+GAP,GAP):
+    GAP = int(maxx-minx)//10
+    for col in range(GAP,width+GAP,GAP):
+        for row in range(GAP,height+GAP,GAP):
             if len(distanceCollect)==0:
                 print(outputIndex)
                 return outputIndex
@@ -138,6 +138,7 @@ def getLocation(distanceCollect,height,width):
                     distanceCollect[i]=False
                     break
     # print(outputIndex)
+    outputIndex = outputIndex[6:] + outputIndex[4:6] + outputIndex[0:4]
     return outputIndex
 
 def getTargetNum():
@@ -149,7 +150,7 @@ def getCertainOriginalImageCut(index):
     global resultsCollection
     size = len(resultsCollection)
     if index<size and index>=0:
-        _,buffer = cv2.imencode(".jpg",resultsCollection[index].originalImageCut)
+        _,buffer = cv2.imencode(".jpg", cv2.rotate(resultsCollection[index].originalImageCut,cv2.ROTATE_90_COUNTERCLOCKWISE) )
         return io.BytesIO(buffer).getvalue()
     else:
         return io.BytesIO().getvalue()
@@ -167,7 +168,7 @@ def getCertainMaskedImageCut(index):
     global resultsCollection
     size = len(resultsCollection)
     if index<size and index>=0:
-        _,buffer = cv2.imencode(".jpg",resultsCollection[index].maskedImageCut)
+        _,buffer = cv2.imencode(".jpg", resultsCollection[index].maskedImageCut )
         return io.BytesIO(buffer).getvalue()
     else:
         return io.BytesIO().getvalue()
@@ -180,9 +181,10 @@ def getCertainScore(index):
     else:
         return "-999"
 
+
 def getLabeledWholeTargetPaper():
     global  originalImgSmall
-    _,buffer = cv2.imencode(".jpg",originalImgSmall)
+    _,buffer = cv2.imencode(".jpg",coloredOriginalImage[20:-20,20:-20])
     return io.BytesIO(buffer).getvalue()
 
 def getWholeTargetPaper():
@@ -195,9 +197,11 @@ def main(content):
     # read from Kotlin
     content_file = io.BytesIO(content)
     img = cv2.cvtColor(cv2.imdecode(np.frombuffer(content_file.getbuffer(), np.uint8), -1),cv2.COLOR_BGR2GRAY)
-
+    global coloredOriginalImage
+    coloredOriginalImage = cv2.imdecode(np.frombuffer(content_file.getbuffer(), np.uint8), -1)
     if img.shape[0]<img.shape[1]:
         img = cv2.rotate(img,cv2.ROTATE_90_CLOCKWISE)
+        coloredOriginalImage =  cv2.rotate(coloredOriginalImage,cv2.ROTATE_90_CLOCKWISE)
     # Block 1
     SCALED_WIDTH = 300
     CROPPED_SCALED_WIDTH=300
@@ -205,11 +209,13 @@ def main(content):
     EXTRA_RADIUS=30
 
     img=cv2.copyMakeBorder(img, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, cv2.BORDER_REPLICATE)
+    coloredOriginalImage = cv2.copyMakeBorder(coloredOriginalImage, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, cv2.BORDER_REPLICATE)
     global originalImg
     originalImg = img.copy()
     global originalImgSmall
     originalImgSmall= resize2Width(SCALED_WIDTH,originalImg)
-
+    coloredOriginalImage = resize2Width(SCALED_WIDTH,coloredOriginalImage)
+    coloredOriginalImage = cv2.rotate(coloredOriginalImage,cv2.ROTATE_90_COUNTERCLOCKWISE)
     # Next block
     img_binarized = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 199, 5)
     kernel = np.ones((5,5),np.uint8)
@@ -245,6 +251,7 @@ def main(content):
         radiusCollect = np.array(radiusCollect)
         q75, q25 = np.percentile(radiusCollect, [75 ,25])
         iqr = q75 - q25
+        iqr = max(iqr,2)
         upperBound = q75+iqr*1.5
         lowerBound = q25-iqr*1.5
         # print(upperBound,lowerBound)
@@ -274,6 +281,10 @@ def main(content):
             position = (center[0] - 10, center[1] + 10)
             text_color = (255, 255, 255)
             plt.imshow(cv2.putText(originalImgSmall, str(n+1), position, cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3),cmap="gray")
+            if n+1==10:
+                cv2.putText(coloredOriginalImage,str(n+1), (center[1] - 20,SCALED_WIDTH-center[0] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3)
+            else:
+                cv2.putText(coloredOriginalImage,str(n+1), (center[1] - 10,SCALED_WIDTH-center[0] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 3)
             n+=1
         contoursFiltered=newContoursFiltered.copy()
     # Difference in x coordinates
@@ -359,3 +370,4 @@ def main(content):
 originalImg = None
 originalImgSmall = None
 resultsCollection= None
+coloredOriginalImage = None
