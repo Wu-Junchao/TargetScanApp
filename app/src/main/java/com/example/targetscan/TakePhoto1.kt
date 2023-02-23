@@ -141,6 +141,7 @@ class TakePhoto1 : AppCompatActivity() {
                     binding.takePhotoBtn.text="Retake photo"
                 } }
         } }
+
     private fun rotateIfRequired(bitmap: Bitmap): Bitmap {
         val exif = ExifInterface(outputImage.path)
         val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,

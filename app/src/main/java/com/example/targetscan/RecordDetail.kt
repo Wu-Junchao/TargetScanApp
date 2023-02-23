@@ -4,15 +4,25 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.view.View.INVISIBLE
+import android.view.View.GONE
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.example.targetscan.databinding.ActivityRocordDetailBinding
 import java.io.File
+import android.widget.SeekBar
+import android.widget.Toast
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import java.security.AccessController.getContext
 
 
 class RecordDetail : AppCompatActivity() {
@@ -24,6 +34,10 @@ class RecordDetail : AppCompatActivity() {
     var flg = false
     var imgName = ""
     var imgProcessLabel = ""
+    lateinit var vectors :String
+    lateinit var parsed_vectors:Array<String>
+    lateinit var originalImg:Bitmap
+    lateinit var scores :String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imgName = intent.getStringExtra("name").toString()
@@ -38,8 +52,16 @@ class RecordDetail : AppCompatActivity() {
         if (outputImage.exists()){
             imageUri =
                 FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
+
             binding.imageDetail.setImageURI(imageUri)
+            val inputStream = contentResolver.openInputStream(imageUri)
+            originalImg = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+//            originalImg= rotateBitmap(originalImg,0)
+            binding.imageDetail.setImageBitmap(originalImg)
+
         }
+
         else{
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
@@ -47,7 +69,45 @@ class RecordDetail : AppCompatActivity() {
         }
 
         displayInfo()
+        if (flg){
+            getArrowImage(vectors,scores)
+        }
 
+
+        val seek = binding.seekBar
+
+        seek?.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+                // write custom code for progress is changed
+                if (seek.progress>0){
+                    binding.seekbarIndicator.setText(seek.progress.toString())
+                }
+                else{
+                    binding.seekbarIndicator.text = "Full target paper"
+                }
+            }
+
+            override fun onStartTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is started
+            }
+
+            override fun onStopTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is stopped
+//                Toast.makeText(this@RecordDetail,
+//                    "Progress is: " + seek.progress ,
+//                    Toast.LENGTH_SHORT).show()
+                if (seek.progress>0){
+                    changeImage(parsed_vectors[seek.progress-1])
+                }
+                else{
+//                    binding.imageDetail.setImageBitmap(originalImg)
+                    getScoreImage(vectors,scores)
+                }
+
+
+            }
+        })
 
         binding.backButton.setOnClickListener{
             val alert: AlertDialog.Builder =AlertDialog.Builder(this)
@@ -95,17 +155,17 @@ class RecordDetail : AppCompatActivity() {
                 displayText+= disciplineList[cursor.getInt(cursor.getColumnIndex("discipline"))]
                 displayText+="\nDate: "
                 displayText+=imgName.slice(1..10)
-                displayText+="\nID: "
-                displayText+=imgName.slice(11..13)
+//                displayText+="\nID: "
+//                displayText+=imgName.slice(11..13)
                 displayText+="\n"
                 displayText+="Comment: "
                 displayText+=cursor.getString(cursor.getColumnIndex("comment"))
 
-                displayText+="\nVectors: "
-                displayText+=cursor.getString(cursor.getColumnIndex("vectors"))
-
+                vectors = cursor.getString(cursor.getColumnIndex("vectors"))
+                parsed_vectors = vectors.split(".").toTypedArray()
                 binding.InformationCollect.text=displayText
-                binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
+                scores = cursor.getString(cursor.getColumnIndex("scores"))
+//                binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
                 Log.d("wu",cursor.getString(cursor.getColumnIndex("vectors")))
             } while (cursor.moveToNext())
         }
@@ -116,14 +176,15 @@ class RecordDetail : AppCompatActivity() {
     private fun displayInfo(){
         if (imgProcessLabel!=getString(R.string.processed_text)){
             var str = ""
-            str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n\n"
-            str += "Date: ${imgName.slice(1..10)}\n\n"
-            str += "ID: ${imgName.slice(11..13)}\n\n"
+            str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n"
+            str += "Date: ${imgName.slice(1..10)}\n"
+//            str += "ID: ${imgName.slice(11..13)}\n"
             val access = getSharedPreferences("data", Context.MODE_PRIVATE)
             val comment = access.getString(imgName,"")
             str += "Comment: ${comment}"
             binding.InformationCollect.text=str
-            binding.ScoreCollect.visibility= INVISIBLE
+            binding.seekBar.visibility=GONE
+            binding.seekbarIndicator.visibility= GONE
         }
         else {
             binding.processButton.text="edit"
@@ -159,5 +220,47 @@ class RecordDetail : AppCompatActivity() {
             outputImage.delete()
         }
     }
+    private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height,
+            matrix, true)
+        bitmap.recycle() // 将不再需要的Bitmap对象回收 return rotatedBitmap
+        return rotatedBitmap
+    }
 
+    private fun changeImage(vector:String){
+        if(!Python.isStarted()){
+            Python.start(AndroidPlatform(this))
+        }
+
+        val py = Python.getInstance()
+        val bytes = py.getModule("dataAnalysis").callAttr("drawCircleGraph",vector).toJava(ByteArray::class.java)
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        binding.imageDetail.setImageBitmap(bitmap)
+    }
+
+    private fun getArrowImage(vector:String,score:String){
+        if(!Python.isStarted()){
+            Python.start(AndroidPlatform(this))
+        }
+
+        val py = Python.getInstance()
+        val bytes = py.getModule("dataAnalysis").callAttr("drawArrowGraph",vector,score).toJava(ByteArray::class.java)
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        binding.imageDetail.setImageBitmap(rotateBitmap(bitmap,270))
+        binding.imageDetail.scaleType=ImageView.ScaleType.CENTER_CROP
+    }
+
+    private fun getScoreImage(vector:String,score:String){
+        if(!Python.isStarted()){
+            Python.start(AndroidPlatform(this))
+        }
+
+        val py = Python.getInstance()
+        val bytes = py.getModule("dataAnalysis").callAttr("drawScoreGraph",vector,score).toJava(ByteArray::class.java)
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        binding.imageDetail.setImageBitmap(rotateBitmap(bitmap,270))
+        binding.imageDetail.scaleType=ImageView.ScaleType.CENTER_CROP
+    }
 }
