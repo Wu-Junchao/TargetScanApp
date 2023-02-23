@@ -122,9 +122,8 @@ def drawCircleGraph(vector):
         if i>0:
             ax.text(center[0]+radiusSet[i]/radiusSet[-1]*140-15,center[1],str(10-i),fontsize=12)
     if vector[0]!=999:
-        point = addVectors(center,vector,multipleFactor=1)
+        point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
         circle = plt.Circle((point[0],point[1]),bulletSize/radiusSet[-1]*140, color = "gray",fill=True)
-
         ax.add_patch(circle)
         # ax.scatter(point[0],point[1],bulletSize/radiusSet[-1]*140,marker="o")
     f=io.BytesIO()
@@ -151,7 +150,7 @@ def drawHeatmapGraph(vectors,location=0):
 
     for vector in vectors:
         if vector[0]!=999:
-            point = addVectors(center,vector,multipleFactor=1)
+            point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
             circle = plt.Circle((point[0],point[1]),bulletSize/radiusSet[-1]*140/2, color = colorList[1],fill=True)
 
             ax.add_patch(circle)
@@ -177,7 +176,7 @@ def drawRealHeatmap(vectors,location=1):
 
     for vector in vectors:
         if vector[0]!=999:
-            point = addVectors(center,vector,multipleFactor=1)
+            point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
             indexs = (point[0]//(300//SPLIT_NUM),point[1]//(300//SPLIT_NUM))
             z[indexs[0],indexs[1]]+=1
 

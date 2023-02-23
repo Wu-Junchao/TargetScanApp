@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.shootingHistory.isVisible = !dateCorr.isNullOrEmpty()
         binding.noRecordText.isVisible = dateCorr.isNullOrEmpty()
-
+        dateCorr= dateCorr.toSortedMap()
         dateRecord=ArrayList<DateRecord>()
         for (i in dateCorr.keys){
             dateRecord.add(DateRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,dateCorr[i]!!))

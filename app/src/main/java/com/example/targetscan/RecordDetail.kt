@@ -9,20 +9,18 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import android.view.View.GONE
+import android.view.View.*
+import android.widget.CompoundButton
 import android.widget.ImageView
+import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.example.targetscan.databinding.ActivityRocordDetailBinding
-import java.io.File
-import android.widget.SeekBar
-import android.widget.Toast
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import java.security.AccessController.getContext
+import com.example.targetscan.databinding.ActivityRocordDetailBinding
+import java.io.File
 
 
 class RecordDetail : AppCompatActivity() {
@@ -38,6 +36,8 @@ class RecordDetail : AppCompatActivity() {
     lateinit var parsed_vectors:Array<String>
     lateinit var originalImg:Bitmap
     lateinit var scores :String
+    var arrowToggle = true
+    var targetNum = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imgName = intent.getStringExtra("name").toString()
@@ -69,45 +69,9 @@ class RecordDetail : AppCompatActivity() {
         }
 
         displayInfo()
-        if (flg){
-            getArrowImage(vectors,scores)
-        }
 
-
-        val seek = binding.seekBar
-
-        seek?.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                // write custom code for progress is changed
-                if (seek.progress>0){
-                    binding.seekbarIndicator.setText(seek.progress.toString())
-                }
-                else{
-                    binding.seekbarIndicator.text = "Full target paper"
-                }
-            }
-
-            override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
-            }
-
-            override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
-//                Toast.makeText(this@RecordDetail,
-//                    "Progress is: " + seek.progress ,
-//                    Toast.LENGTH_SHORT).show()
-                if (seek.progress>0){
-                    changeImage(parsed_vectors[seek.progress-1])
-                }
-                else{
-//                    binding.imageDetail.setImageBitmap(originalImg)
-                    getScoreImage(vectors,scores)
-                }
-
-
-            }
-        })
+        setSeekBar()
+        setToggle()
 
         binding.backButton.setOnClickListener{
             val alert: AlertDialog.Builder =AlertDialog.Builder(this)
@@ -160,7 +124,7 @@ class RecordDetail : AppCompatActivity() {
                 displayText+="\n"
                 displayText+="Comment: "
                 displayText+=cursor.getString(cursor.getColumnIndex("comment"))
-
+                targetNum = cursor.getInt(cursor.getColumnIndex("targetNum"))
                 vectors = cursor.getString(cursor.getColumnIndex("vectors"))
                 parsed_vectors = vectors.split(".").toTypedArray()
                 binding.InformationCollect.text=displayText
@@ -262,5 +226,76 @@ class RecordDetail : AppCompatActivity() {
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         binding.imageDetail.setImageBitmap(rotateBitmap(bitmap,270))
         binding.imageDetail.scaleType=ImageView.ScaleType.CENTER_CROP
+    }
+
+    private fun setSeekBar(){
+        val seek = binding.seekBar
+        seek.max = targetNum+1
+        seek?.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+                // write custom code for progress is changed
+                if (seek.progress>1){
+                    binding.arrowScoreSwitch.visibility= INVISIBLE
+                    binding.seekbarIndicator.setText("Position "+(seek.progress-1).toString())
+                }
+                else if (seek.progress==0){
+                    binding.arrowScoreSwitch.visibility= INVISIBLE
+                    binding.seekbarIndicator.text = "Full target paper"
+                }
+                else{
+                    binding.arrowScoreSwitch.visibility= VISIBLE
+                    if (arrowToggle){
+                        binding.seekbarIndicator.text = "Arrow graph"
+                    }
+                    else{
+                        binding.seekbarIndicator.text = "Score graph"
+                    }
+                }
+            }
+
+            override fun onStartTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is started
+            }
+            override fun onStopTrackingTouch(seek: SeekBar) {
+                // write custom code for progress is stopped
+//                Toast.makeText(this@RecordDetail,
+//                    "Progress is: " + seek.progress ,
+//                    Toast.LENGTH_SHORT).show()
+                if (seek.progress>1){
+                    changeImage(parsed_vectors[seek.progress-2])
+                }
+                else if (seek.progress==0){
+                    binding.imageDetail.setImageBitmap(originalImg)
+                }
+                else{
+                    binding.arrowScoreSwitch.visibility= VISIBLE
+                    if (arrowToggle){
+                        getArrowImage(vectors,scores)
+                    }
+                    else{
+                        getScoreImage(vectors,scores)
+                    }
+                }
+            }
+        })
+    }
+    private fun setToggle(){
+        val toggle = binding.arrowScoreSwitch
+        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // The toggle is enabled
+                getScoreImage(vectors,scores)
+                toggle.text="Score"
+                arrowToggle=false
+                binding.seekbarIndicator.text = "Score graph"
+            } else {
+                // The toggle is disabled
+                getArrowImage(vectors,scores)
+                toggle.text="Arrow"
+                arrowToggle=true
+                binding.seekbarIndicator.text = "Arrow graph"
+            }
+        }
     }
 }

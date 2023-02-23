@@ -22,6 +22,7 @@ import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.core.ImageCapture.FLASH_MODE_ON
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.processing.SurfaceProcessorNode.In
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import java.io.File
@@ -226,9 +227,10 @@ class TakePhoto2 : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        while (access.getString("$concatDate${int2ThreeDigits(nextID)}.jpg", "404") != "404") {
-            nextID += 1
-        }
+//        while (access.getString("$concatDate${int2ThreeDigits(nextID)}.jpg", "404") != "404") {
+//            nextID += 1
+//        }
+        nextID=findNextID(index,year, month, day)
 
         binding.takePhotoBtn.setOnClickListener {
             if (binding.takePhotoBtn.text.toString() == "Retake photo" && allPermissionsGranted()) {
@@ -255,7 +257,7 @@ class TakePhoto2 : AppCompatActivity() {
 
         binding.cancelPhotoBtn.setOnClickListener {
             outputImage =
-                File(externalCacheDir, "$index${dateFormat(year, month, day)}${nextID - 1}.jpg")
+                File(externalCacheDir, "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg")
             if (outputImage.exists()) {
                 outputImage.delete()
             }
@@ -315,5 +317,22 @@ class TakePhoto2 : AppCompatActivity() {
             matrix, true)
         bitmap.recycle() // 将不再需要的Bitmap对象回收 return rotatedBitmap
         return rotatedBitmap
+    }
+
+    private fun findNextID(index:Int,year:Int,month:Int,day: Int):Int{
+        var photoList = externalCacheDir?.list()
+        var result = 0
+        if (photoList.isNullOrEmpty()){
+            return 1
+        }
+        else{
+            for (photo in photoList){
+                val head = "$index${dateFormat(year, month, day)}"
+                if (photo.slice(0..10) ==head && photo.slice(11..13).toInt()>result){
+                    result=photo.slice(11..13).toInt()
+                }
+            }
+        }
+        return result+1
     }
 }

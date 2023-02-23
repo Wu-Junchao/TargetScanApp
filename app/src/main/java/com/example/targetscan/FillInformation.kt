@@ -18,7 +18,6 @@ class FillInformation : AppCompatActivity() {
     lateinit var binding:ActivityFillInformationBinding
     lateinit var disciplineList:MutableList<String>
     lateinit var outputImage: File
-    var nextID=1
 
     private fun dateFormat(year:Int, month: Int, day:Int):String{
         var m = if (month in 1..9){
