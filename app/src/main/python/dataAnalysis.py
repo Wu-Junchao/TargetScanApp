@@ -49,9 +49,10 @@ def drawScoreGraph(vectors,scores):
         for index in range(len(vectors)):
             circle = plt.Circle((centerList[index][0],centerList[index][1]),170, color = "gray",fill=False)
             ax.add_patch(circle)
-            if vectors[index][0]==999:
-                ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
-            elif scores[index]<=5:
+            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index),fontsize=15,color="gray",rotation=270)
+            # if vectors[index][0]==999:
+            #     ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
+            if scores[index]<=5:
                 ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
             else:
                 if scores[index]==10:
@@ -82,8 +83,12 @@ def drawArrowGraph(vectors,scores):
         for index in range(len(vectors)):
             circle = plt.Circle((centerList[index][0],centerList[index][1]),170, color = "gray",fill=False)
             ax.add_patch(circle)
+            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index),fontsize=15,color="gray",rotation=270)
             if vectors[index][0]==999:
                 ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
+            elif vectors[index][0]==888:
+                ax.text(centerList[index][0]-70,centerList[index][1]+10,"?",fontsize=14,rotation = 270,color = colorList[0])
+                # ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
             elif scores[index]<=5:
                 ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
             else:
@@ -121,7 +126,7 @@ def drawCircleGraph(vector):
         ax.add_patch(circle)
         if i>0:
             ax.text(center[0]+radiusSet[i]/radiusSet[-1]*140-15,center[1],str(10-i),fontsize=12)
-    if vector[0]!=999:
+    if vector[0]!=999 and vector[0]!=888:
         point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
         circle = plt.Circle((point[0],point[1]),bulletSize/radiusSet[-1]*140, color = "gray",fill=True)
         ax.add_patch(circle)
@@ -144,7 +149,7 @@ def drawRealHeatmap(vectors,location=-1):
     center=(150,150)
 
     for vector in vectors:
-        if vector[0]!=999:
+        if vector[0]!= 999 and vector[0]!=888:
             point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
             indexs = (point[0]//(300//SPLIT_NUM),point[1]//(300//SPLIT_NUM))
             z[indexs[0],indexs[1]]+=1

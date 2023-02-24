@@ -21,6 +21,7 @@ import com.chaquo.python.android.AndroidPlatform
 import com.example.targetscan.databinding.ActivityPhotoProcess2Binding
 import java.io.File
 import java.util.Timer
+import kotlin.math.abs
 
 class PhotoProcess : AppCompatActivity() {
     private lateinit var binding:ActivityPhotoProcess2Binding
@@ -172,16 +173,16 @@ class PhotoProcess : AppCompatActivity() {
 //            Log.d("wu",score.toString())
             if (score in 6..10){
                 if (!editonly && i>=resultCollect.size){
-                    vectorCollect+="999,999"
+                    vectorCollect+="888,888"
                 }
                 else if (editonly && i>=scores.size){
-                    vectorCollect+="999,999"
+                    vectorCollect+="888,888"
                 }else{
-                    if (!editonly && score!=resultCollect[i]){
-                        vectorCollect[i]="999,999"
+                    if (!editonly && abs(score-resultCollect[i])>1){
+                        vectorCollect[i]="888,888"
                     }
-                    else if (editonly && score!=scores[i].toInt()){
-                        vectorCollect[i]="999,999"
+                    else if (editonly && abs(score-scores[i].toInt())>1){
+                        vectorCollect[i]="888,888"
                     }
                 }
                 scoreList+=score

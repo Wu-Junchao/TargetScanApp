@@ -158,6 +158,22 @@ class RecordDetail : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         displayInfo()
+        val seek = binding.seekBar
+        if (seek.progress>1){
+            changeImage(parsedVectors[seek.progress-2])
+        }
+        else if (seek.progress==0){
+            binding.imageDetail.setImageBitmap(originalImg)
+        }
+        else{
+            binding.arrowScoreSwitch.visibility= VISIBLE
+            if (arrowToggle){
+                getArrowImage(vectors,scores)
+            }
+            else{
+                getScoreImage(vectors,scores)
+            }
+        }
     }
 
     private fun deleteRecord(imgName:String){
