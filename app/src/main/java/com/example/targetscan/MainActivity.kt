@@ -37,7 +37,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.settings -> Toast.makeText(this, "You click settings, TODO", Toast.LENGTH_SHORT).show()
+            R.id.settings -> {
+                val intent = Intent(this,Setting::class.java)
+                startActivity(intent)
+            }
         }
         return true
     }
@@ -104,6 +107,10 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("totalNum",0)
             editor.apply()
         }
+        if (!access.contains("ascendingOrder")){
+            editor.putBoolean("ascendingOrder",false)
+            editor.apply()
+        }
         calendar = Calendar.getInstance()
         year = calendar.get(Calendar.YEAR).toString()
         month = formatMonth(calendar.get(Calendar.MONTH))
@@ -120,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,DataDisplay::class.java)
             startActivity(intent)
         }
-        
+
         binding.monthSelector.setOnClickListener {
 
             val dialog = MonthYearPickerDialog.Builder(
@@ -177,13 +184,19 @@ class MainActivity : AppCompatActivity() {
                         dateCorr[photo.slice(1..10)]=1
                     }
                 }
-
             }
         }
 
+
         binding.shootingHistory.isVisible = !dateCorr.isNullOrEmpty()
         binding.noRecordText.isVisible = dateCorr.isNullOrEmpty()
-        dateCorr= dateCorr.toSortedMap()
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        if (!access.getBoolean("ascendingOrder",false)){
+            dateCorr= dateCorr.toSortedMap(reverseOrder())
+        }
+        else{
+            dateCorr= dateCorr.toSortedMap()
+        }
         dateRecord=ArrayList<DateRecord>()
         for (i in dateCorr.keys){
             dateRecord.add(DateRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,dateCorr[i]!!))

@@ -70,8 +70,12 @@ class DataDisplay : AppCompatActivity() {
             else{
                 calendar.add(Calendar.DAY_OF_YEAR,-xDaysAgo)
             }
-            val startTime = LocalDate.of(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH))
-//            Log.d("wu",startTime.toString())
+            var startTime = LocalDate.of(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH))
+
+            if (xDaysAgo==42){
+                startTime = LocalDate.of(2022,1,1)
+            }
+            Log.d("wu",startTime.toString())
             for (photo in photoList){
                 val date = photo.slice(1..10)
                 val year = date.slice(0..3).toInt()
@@ -99,7 +103,7 @@ class DataDisplay : AppCompatActivity() {
             val size = photoList.size
             var index = size-1
             var acc = 0
-            while (index>=0 && acc<=recordNum){
+            while (index>=0 && (acc<=recordNum || recordNum==42)){
 //                Log.d("wu",photoList[index])
                 if (access.getString(photoList[index],"")==getString(R.string.processed_text)){
                     returnList+=photoList[index]
@@ -109,8 +113,11 @@ class DataDisplay : AppCompatActivity() {
                     index-=1
                 }
             }
-            if (index==0 && acc<recordNum){
-                Toast.makeText(this, "Don't have enough records", Toast.LENGTH_SHORT).show()
+            if (index<=0 && acc<recordNum){
+                if (recordNum!=42){
+                    Toast.makeText(this, "Only has ${acc} valid records.", Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
         return returnList
@@ -155,9 +162,6 @@ class DataDisplay : AppCompatActivity() {
                 if (vectorCollect.isNotEmpty()){
                     vectorCollect = vectorCollect.dropLast(1)
                 }
-//                Log.d("wu",vectorCollect)
-                Log.d("wu","By num")
-                Log.d("wu",vectorCollect)
                 getHeatmapWithVectors(vectorCollect)
             }
         }
@@ -177,8 +181,6 @@ class DataDisplay : AppCompatActivity() {
                 if (vectorCollect.isNotEmpty()){
                     vectorCollect = vectorCollect.dropLast(1)
                 }
-                Log.d("wu","By date")
-                Log.d("wu",vectorCollect)
                 getHeatmapWithVectors(vectorCollect)
             }
         }

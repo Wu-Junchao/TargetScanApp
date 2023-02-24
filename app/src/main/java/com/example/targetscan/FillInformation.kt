@@ -100,7 +100,7 @@ class FillInformation : AppCompatActivity() {
     }
      private fun initDateSelector(year:Int,month:Int,day:Int){
          val c = Calendar.getInstance()
-         c.set(2020,0,1)
+         c.set(2022,0,1)
          binding.dateInput.minDate= c.timeInMillis
          binding.dateInput.maxDate=Date().time
          if (year!=1111) {

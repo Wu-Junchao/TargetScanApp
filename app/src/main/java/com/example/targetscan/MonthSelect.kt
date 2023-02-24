@@ -85,7 +85,13 @@ class MonthSelect : AppCompatActivity() {
             }
         }
 
-        photoCorr = photoCorr.toSortedMap(reverseOrder())
+        val access = getSharedPreferences("data", Context.MODE_PRIVATE)
+        if (!access.getBoolean("ascendingOrder",false)){
+            photoCorr = photoCorr.toSortedMap(reverseOrder())
+        }
+        else{
+            photoCorr = photoCorr.toSortedMap()
+        }
         shootList=ArrayList<ShootRecord>()
         for (i in photoCorr.keys){
             shootList.add(ShootRecord(i, androidx.appcompat.R.drawable.abc_ic_go_search_api_material,photoCorr[i]!!))

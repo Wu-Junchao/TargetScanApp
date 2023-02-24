@@ -30,13 +30,15 @@ def addVectors(vector1,vector2,add=True,multipleFactor = 120):
     return (x,y)
 
 def drawScoreGraph(vectors,scores):
+    if vectors=="" or scores=="":
+        return io.BytesIO().getvalue()
     vectors = parseInputData(vectors)
     scores = parseScore(scores)
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
     centerList = [(240,240+520*i) for i in range(2)]+ [(240,200+480*i) for i in range(2,4)]+ [(540,500),(540,1400)]+[(840,240+520*i) for i in range(2)]+[(840,200+480*i) for i in range(2,4)]
     centerList = [centerList[i] for i in (6,7,8,9,4,5,0,1,2,3)]
     if False and len(vectors)!=10:
-        return
+        return io.BytesIO().getvalue()
     else:
         fig = plt.figure()
         ax = fig.add_subplot()
@@ -64,13 +66,15 @@ def drawScoreGraph(vectors,scores):
     return f.getvalue()
 
 def drawArrowGraph(vectors,scores):
+    if vectors=="":
+        return io.BytesIO().getvalue()
     vectors = parseInputData(vectors)
     scores = parseScore(scores)
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
     centerList = [(240,240+520*i) for i in range(2)]+ [(240,200+480*i) for i in range(2,4)]+ [(540,500),(540,1400)]+[(840,240+520*i) for i in range(2)]+[(840,200+480*i) for i in range(2,4)]
     centerList = [centerList[i] for i in (6,7,8,9,4,5,0,1,2,3)]
     if False:
-        return
+        return io.BytesIO().getvalue()
     else:
         fig = plt.figure()
         ax = fig.add_subplot()
@@ -103,6 +107,8 @@ def drawArrowGraph(vectors,scores):
     return f.getvalue()
 
 def drawCircleGraph(vector):
+    if vector=="":
+        return io.BytesIO().getvalue()
     vector = vector.split(",")
     vector = (int(vector[0]),int(vector[1]))
     colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
@@ -137,6 +143,8 @@ def drawCircleGraph(vector):
     # fig.savefig('auto.png')
 
 def drawRealHeatmap(vectors,location=-1):
+    if vectors=="":
+        return io.BytesIO().getvalue()
     vectors = parseInputData(vectors)
     radiusSet=[x/2 for x in (12.92,20.23,27.55,34.86,42.18,51.39)]
     bulletSize=5.6/2
@@ -181,3 +189,4 @@ def drawRealHeatmap(vectors,location=-1):
     f=io.BytesIO()
     plt.savefig(f,format="png")
     return f.getvalue()
+

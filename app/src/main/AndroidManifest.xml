@@ -21,6 +21,13 @@
         android:theme="@style/Theme.TargetScan"
         tools:targetApi="31">
         <activity
+            android:name=".Setting"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".DataDisplay"
             android:exported="false">
             <meta-data
@@ -59,7 +66,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".EditComment"
             android:exported="false">
