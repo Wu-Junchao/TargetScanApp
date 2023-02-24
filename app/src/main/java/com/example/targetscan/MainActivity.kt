@@ -137,8 +137,8 @@ class MainActivity : AppCompatActivity() {
                     // To something
                     year = y.toString()
                     month = formatMonth(m)
-                    Log.d("wu",year)
-                    Log.d("wu",month)
+//                    Log.d("wu",year)
+//                    Log.d("wu",month)
                     setupAdapter(year,month)
                 },
                 selectedYear = calendar.get(Calendar.YEAR),

@@ -47,7 +47,7 @@ class DataDisplay : AppCompatActivity() {
 
         binding.processHeatmapButton.setOnClickListener {
             if (typeFlg){
-
+                displayByCertainTarget(xNum,rangeFlg,xDateAgo,isMonth,index)
             }
             else{
                 displayByAllTargets(xNum,rangeFlg,xDateAgo,isMonth)
@@ -75,7 +75,7 @@ class DataDisplay : AppCompatActivity() {
             if (xDaysAgo==42){
                 startTime = LocalDate.of(2022,1,1)
             }
-            Log.d("wu",startTime.toString())
+//            Log.d("wu",startTime.toString())
             for (photo in photoList){
                 val date = photo.slice(1..10)
                 val year = date.slice(0..3).toInt()
@@ -142,6 +142,28 @@ class DataDisplay : AppCompatActivity() {
         return vectors
     }
 
+    @SuppressLint("Range")
+    private fun getCertainVectorFromDatabase(imgName:String,index: Int):String{
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val db = dbHelper.readableDatabase
+        var vector = ""
+        val cursor = db.query("ShootingRecords",null,"filename = ?",
+            arrayOf<String>(imgName),null,null,null)
+        if (cursor.moveToFirst()){
+            do{
+                val targetNum = cursor.getInt(cursor.getColumnIndex("targetNum"))
+                val vectors = cursor.getString(cursor.getColumnIndex("vectors"))
+                val parsedVectors = vectors.split(".").toTypedArray()
+                if (index<targetNum){
+                    vector = parsedVectors[index]
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return vector
+    }
+
     private fun displayByAllTargets(recordNum:Int = 25,rangeFlg:Boolean = false,xDaysAgo:Int =14 ,isMonth: Boolean = false){
         var fileCollect= arrayOf<String>()
         var vectorCollect=""
@@ -156,7 +178,7 @@ class DataDisplay : AppCompatActivity() {
                 for (file in fileCollect){
                     singleVector = getVectorFromDatabase(file)
                     if (singleVector.isNotEmpty()){
-                        vectorCollect+=getVectorFromDatabase(file)+"."
+                        vectorCollect+= "$singleVector."
                     }
                 }
                 if (vectorCollect.isNotEmpty()){
@@ -175,7 +197,7 @@ class DataDisplay : AppCompatActivity() {
                 for (file in fileCollect){
                     singleVector = getVectorFromDatabase(file)
                     if (singleVector.isNotEmpty()){
-                        vectorCollect+=getVectorFromDatabase(file)+"."
+                        vectorCollect+= "$singleVector."
                     }
                 }
                 if (vectorCollect.isNotEmpty()){
@@ -186,13 +208,57 @@ class DataDisplay : AppCompatActivity() {
         }
     }
 
-    private fun getHeatmapWithVectors(vectors:String){
+    private fun displayByCertainTarget(recordNum:Int = 25,rangeFlg:Boolean = false,xDaysAgo:Int =14 ,isMonth: Boolean = false,index:Int){
+        var fileCollect= arrayOf<String>()
+        var vectorCollect=""
+        if (rangeFlg){
+            // true -> by num
+            if (recordNum==0){
+                return
+            }
+            else{
+                fileCollect=getAllFilesInCertainNumRange(xNum)
+                var singleVector = ""
+                for (file in fileCollect){
+                    singleVector = getCertainVectorFromDatabase(file,index)
+                    if (singleVector.isNotEmpty()){
+                        vectorCollect+= "$singleVector."
+                    }
+                }
+                if (vectorCollect.isNotEmpty()){
+                    vectorCollect = vectorCollect.dropLast(1)
+                }
+                getHeatmapWithVectors(vectorCollect)
+            }
+        }
+        else{
+            if (xDaysAgo==0){
+                return
+            }
+            else{
+                fileCollect=getAllFilesInCertainDateRange(xDaysAgo,isMonth)
+                var singleVector = ""
+                for (file in fileCollect){
+                    singleVector = getCertainVectorFromDatabase(file,index)
+                    if (singleVector.isNotEmpty()){
+                        vectorCollect+="$singleVector."
+                    }
+                }
+                if (vectorCollect.isNotEmpty()){
+                    vectorCollect = vectorCollect.dropLast(1)
+                }
+                getHeatmapWithVectors(vectorCollect,index)
+            }
+        }
+    }
+
+    private fun getHeatmapWithVectors(vectors:String,location:Int = -1){
         if(!Python.isStarted()){
             Python.start(AndroidPlatform(this))
         }
 
         val py = Python.getInstance()
-        val bytes = py.getModule("dataAnalysis").callAttr("drawRealHeatmap",vectors).toJava(ByteArray::class.java)
+        val bytes = py.getModule("dataAnalysis").callAttr("drawRealHeatmap",vectors,location).toJava(ByteArray::class.java)
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         binding.heatmapImg.setImageBitmap(bitmap)
     }
@@ -285,13 +351,14 @@ class DataDisplay : AppCompatActivity() {
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 binding.indexSeekbarIndicator.text = "Position ${seek.progress+1}"
-                index = seek.progress
+
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                index = seek.progress
             }
         })
     }

@@ -176,7 +176,10 @@ def drawRealHeatmap(vectors,location=-1):
     c = ax.pcolormesh(x, y, z, cmap='Blues', vmin=z_min, vmax=z_max)
     rec = plt.Rectangle((0,0),299,299,fill=False)
     ax.add_patch(rec)
-    ax.text(10,20,"Location "+str(location),fontsize=12)
+    if location==-1:
+        ax.text(10,20,"All targets",fontsize=12)
+    else:
+        ax.text(10,20,"Location "+str(location+1),fontsize=12)
     for i in range(len(radiusSet)):
         circle = plt.Circle((center[0],center[1]),radiusSet[i]/radiusSet[-1]*140, color = "gray",fill=False)
         ax.add_patch(circle)

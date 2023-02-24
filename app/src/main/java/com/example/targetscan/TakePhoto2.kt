@@ -201,7 +201,7 @@ class TakePhoto2 : AppCompatActivity() {
         setSupportActionBar(binding.toolbar2)
         supportActionBar?.title = "Add new record"
 
-        discplineList = mutableListOf<String>("Rifle shoot", "Test")
+        discplineList = mutableListOf<String>("Rifle shoot")
         val index = intent.getIntExtra("index", 0)
         val year = intent.getIntExtra("year", 2023)
         val month = intent.getIntExtra("month", 1)

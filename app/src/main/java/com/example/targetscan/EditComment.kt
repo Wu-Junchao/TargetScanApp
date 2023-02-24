@@ -22,7 +22,7 @@ class EditComment : AppCompatActivity() {
         //restart Parameter
         imgName = intent.getStringExtra("imgName").toString()
         supportActionBar?.title = "Edit Existing Record"
-        disciplineList= mutableListOf<String>("Rifle shoot","Test")
+        disciplineList= mutableListOf<String>("Rifle shoot")
 
         showInfo(imgName)
 

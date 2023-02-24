@@ -67,7 +67,7 @@ class FillInformation : AppCompatActivity() {
         binding.commentInput.setText(comment)
 
         supportActionBar?.title = "Entering information"
-        disciplineList = mutableListOf<String>("Rifle shoot","Test")
+        disciplineList = mutableListOf<String>("Rifle shoot")
         initSpinner(index)
         initDateSelector(year,month-1,day)
 

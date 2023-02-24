@@ -28,7 +28,7 @@ class RecordDetail : AppCompatActivity() {
     lateinit var outputImage: File
     lateinit var imageUri : Uri
     var displayText = ""
-    val disciplineList = mutableListOf<String>("Rifle shoot","Test")
+    val disciplineList = mutableListOf<String>("Rifle shoot")
     var flg = false
     var imgName = ""
     lateinit var vectors :String
@@ -128,7 +128,7 @@ class RecordDetail : AppCompatActivity() {
                 binding.InformationCollect.text=displayText
                 scores = cursor.getString(cursor.getColumnIndex("scores"))
 //                binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
-                Log.d("wu",cursor.getString(cursor.getColumnIndex("vectors")))
+//                Log.d("wu",cursor.getString(cursor.getColumnIndex("vectors")))
             } while (cursor.moveToNext())
         }
         db.close()
