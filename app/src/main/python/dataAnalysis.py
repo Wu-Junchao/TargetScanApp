@@ -131,39 +131,8 @@ def drawCircleGraph(vector):
     return f.getvalue()
     # fig.savefig('auto.png')
 
-def drawHeatmapGraph(vectors,location=0):
-    colorList = ["darkred","tomato","sandybrown","orange","gold","greenyellow","palegreen","turquoise","deepskyblue","royalblue","mediumslateblue"]
-
-    radiusSet=[x/2 for x in (12.92,20.23,27.55,34.86,42.18,51.39)]
-    bulletSize=5.6/2
-
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    ax.set_aspect('equal')
-    plt.xlim(0,300)
-    plt.ylim(300,0)
-    plt.axis('off')
-    center=(150,150)
-    rec = plt.Rectangle((0,0),299,299,fill=False)
-    ax.add_patch(rec)
-    ax.text(10,20,"Location "+str(location),fontsize=12)
-
-    for vector in vectors:
-        if vector[0]!=999:
-            point = addVectors(center,(vector[1],-vector[0]),multipleFactor=1)
-            circle = plt.Circle((point[0],point[1]),bulletSize/radiusSet[-1]*140/2, color = colorList[1],fill=True)
-
-            ax.add_patch(circle)
-            # ax.scatter(point[0],point[1],bulletSize/radiusSet[-1]*140,marker="o")
-    for i in range(len(radiusSet)):
-        circle = plt.Circle((center[0],center[1]),radiusSet[i]/radiusSet[-1]*140, color = "gray",fill=False)
-        ax.add_patch(circle)
-        if i>0:
-            ax.text(center[0]+radiusSet[i]/radiusSet[-1]*140-15,center[1],str(10-i),fontsize=12)
-    plt.show()
-    # fig.savefig('auto.png')
-
-def drawRealHeatmap(vectors,location=1):
+def drawRealHeatmap(vectors,location=-1):
+    vectors = parseInputData(vectors)
     radiusSet=[x/2 for x in (12.92,20.23,27.55,34.86,42.18,51.39)]
     bulletSize=5.6/2
 
@@ -204,4 +173,6 @@ def drawRealHeatmap(vectors,location=1):
     # ax.axis([x.min(), x.max(), y.min(), y.max()])
     # fig.colorbar(c, ax=ax)
 
-    plt.show()
+    f=io.BytesIO()
+    plt.savefig(f,format="png")
+    return f.getvalue()
