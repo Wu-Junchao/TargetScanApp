@@ -122,9 +122,9 @@ def getLocation(distanceCollect,height,width):
     minx = distanceCollect[index][0]
     index =np.argmax(temp)
     maxx=distanceCollect[index][0]
-    GAP = abs(int(maxx-minx)//10)
-    for col in range(2*GAP,width+2*GAP,2*GAP):
-        for row in range(2*GAP,height+2*GAP,2*GAP):
+    GAP = abs(int(maxx-minx)//5)
+    for col in range(50,width+50,50):
+        for row in range(GAP,height+GAP,GAP):
             if len(distanceCollect)==0:
                 print(outputIndex)
                 return outputIndex
