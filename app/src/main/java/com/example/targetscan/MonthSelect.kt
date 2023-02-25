@@ -24,7 +24,10 @@ class MonthSelect : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.settings -> Toast.makeText(this, "You click settings, TODO", Toast.LENGTH_SHORT).show()
+            R.id.settings ->{
+                val intent = Intent(this,Setting::class.java)
+                startActivity(intent)
+            }
         }
         return true
     }

@@ -56,12 +56,12 @@
             app:layout_constraintEnd_toStartOf="@id/targetNumInput"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
+        <TextView
             android:layout_width="30dp"
             android:gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:id="@+id/targetNumInput"
-            android:inputType="numberSigned"
+            android:text="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/targetNumText"

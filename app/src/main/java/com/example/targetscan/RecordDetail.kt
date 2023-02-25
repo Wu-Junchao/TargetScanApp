@@ -37,6 +37,8 @@ class RecordDetail : AppCompatActivity() {
     lateinit var scores :String
     var arrowToggle = true
     var targetNum = 0
+    private lateinit var positionPoint:Array<String>
+    private var renderedFlg = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imgName = intent.getStringExtra("name").toString()
@@ -99,13 +101,14 @@ class RecordDetail : AppCompatActivity() {
                 intent.putExtra("editonly",true)
             }
             startActivity(intent)
+            finish()
         }
 
     }
 
     @SuppressLint("Range")
     private fun displayData(imgName:String){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
 
         val cursor = db.query("ShootingRecords",null,"filename = ?",
@@ -127,6 +130,8 @@ class RecordDetail : AppCompatActivity() {
                 parsedVectors = vectors.split(".").toTypedArray()
                 binding.InformationCollect.text=displayText
                 scores = cursor.getString(cursor.getColumnIndex("scores"))
+
+                positionPoint= cursor.getString(cursor.getColumnIndex("positions")).split(".").toTypedArray()
 //                binding.ScoreCollect.text = cursor.getString(cursor.getColumnIndex("scores"))
 //                Log.d("wu",cursor.getString(cursor.getColumnIndex("vectors")))
             } while (cursor.moveToNext())
@@ -151,6 +156,8 @@ class RecordDetail : AppCompatActivity() {
         }
         else {
             binding.processButton.text="edit"
+            binding.seekBar.visibility= VISIBLE
+            binding.seekbarIndicator.visibility= VISIBLE
             flg=true
             displayData(imgName)
         }
@@ -160,7 +167,7 @@ class RecordDetail : AppCompatActivity() {
         displayInfo()
         val seek = binding.seekBar
         if (seek.progress>1){
-            changeImage(parsedVectors[seek.progress-2])
+            changeImage(parsedVectors[seek.progress-2],seek.progress-2)
         }
         else if (seek.progress==0){
             binding.imageDetail.setImageBitmap(originalImg)
@@ -177,7 +184,7 @@ class RecordDetail : AppCompatActivity() {
     }
 
     private fun deleteRecord(imgName:String){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.writableDatabase
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
@@ -208,15 +215,31 @@ class RecordDetail : AppCompatActivity() {
         return rotatedBitmap
     }
 
-    private fun changeImage(vector:String){
-        if(!Python.isStarted()){
-            Python.start(AndroidPlatform(this))
+    private fun changeImage(vector:String,index:Int){
+        if ( vector.slice(0..2)=="888" || renderedFlg){
+            binding.singleTargetViewSwitch.visibility= if (vector.slice(0..2)=="888") INVISIBLE else VISIBLE
+            val certainPosition = positionPoint[index].split(",")
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+            val py = Python.getInstance()
+            Log.d("wu",positionPoint[index])
+            val content = contentResolver.openInputStream(imageUri)!!.use { it.readBytes() }
+            val bytes = py.getModule("imageProcess").callAttr("cropImg",content,certainPosition[0].toInt(),certainPosition[1].toInt(),certainPosition[2].toInt()).toJava(ByteArray::class.java)
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageDetail.setImageBitmap(bitmap)
+//            binding.imageDetail.scaleType  = ImageView.ScaleType.FIT_CENTER
+//            val croppedImg = Bitmap.createBitmap(originalImg,certainPosition[0].toInt()-150,certainPosition[1].toInt()-150,300,300)
+//            binding.imageDetail.setImageBitmap(croppedImg)
+        }else{
+            if(!Python.isStarted()){
+                Python.start(AndroidPlatform(this))
+            }
+            val py = Python.getInstance()
+            val bytes = py.getModule("dataAnalysis").callAttr("drawCircleGraph",vector).toJava(ByteArray::class.java)
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            binding.imageDetail.setImageBitmap(bitmap)
         }
-
-        val py = Python.getInstance()
-        val bytes = py.getModule("dataAnalysis").callAttr("drawCircleGraph",vector).toJava(ByteArray::class.java)
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-        binding.imageDetail.setImageBitmap(bitmap)
     }
 
     private fun getArrowImage(vector:String,score:String){
@@ -252,14 +275,17 @@ class RecordDetail : AppCompatActivity() {
                 // write custom code for progress is changed
                 if (seek.progress>1){
                     binding.arrowScoreSwitch.visibility= INVISIBLE
-                    binding.seekbarIndicator.setText("Position "+(seek.progress-1).toString())
+                    binding.singleTargetViewSwitch.visibility = VISIBLE
+                    binding.seekbarIndicator.text = "Position "+(seek.progress-1).toString()
                 }
                 else if (seek.progress==0){
                     binding.arrowScoreSwitch.visibility= INVISIBLE
                     binding.seekbarIndicator.text = "Full target paper"
+                    binding.singleTargetViewSwitch.visibility = INVISIBLE
                 }
                 else{
                     binding.arrowScoreSwitch.visibility= VISIBLE
+                    binding.singleTargetViewSwitch.visibility = INVISIBLE
                     if (arrowToggle){
                         binding.seekbarIndicator.text = "Arrow graph"
                     }
@@ -278,7 +304,7 @@ class RecordDetail : AppCompatActivity() {
 //                    "Progress is: " + seek.progress ,
 //                    Toast.LENGTH_SHORT).show()
                 if (seek.progress>1){
-                    changeImage(parsedVectors[seek.progress-2])
+                    changeImage(parsedVectors[seek.progress-2],seek.progress-2)
                 }
                 else if (seek.progress==0){
                     binding.imageDetail.setImageBitmap(originalImg)
@@ -297,7 +323,7 @@ class RecordDetail : AppCompatActivity() {
     }
     private fun setToggle(){
         val toggle = binding.arrowScoreSwitch
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // The toggle is enabled
                 getScoreImage(vectors,scores)
@@ -310,6 +336,24 @@ class RecordDetail : AppCompatActivity() {
                 toggle.text="Arrow"
                 arrowToggle=true
                 binding.seekbarIndicator.text = "Arrow graph"
+            }
+        }
+
+        val toggle2 = binding.singleTargetViewSwitch
+        val seek = binding.seekBar
+        toggle2.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // The toggle is enabled
+
+                toggle2.text="original"
+                renderedFlg=true
+                changeImage(parsedVectors[seek.progress-2],seek.progress-2)
+            } else {
+                // The toggle is disabled
+                toggle2.text="rendered"
+                renderedFlg=false
+                changeImage(parsedVectors[seek.progress-2],seek.progress-2)
+
             }
         }
     }

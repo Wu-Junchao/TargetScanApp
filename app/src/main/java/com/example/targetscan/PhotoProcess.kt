@@ -43,7 +43,7 @@ class PhotoProcess : AppCompatActivity() {
     private var resultCollect:Array<Int> = arrayOf<Int>()
     private var base = 0
     private var scores = arrayOf(String())
-
+    private lateinit var positionCollect : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotoProcess2Binding.inflate(layoutInflater)
@@ -85,8 +85,9 @@ class PhotoProcess : AppCompatActivity() {
             binding.confirmEditedResult.text="confirm"
             binding.processLaterButton.visibility= GONE
             scores = getWhat(imgName!!,"scores",",")
+            positionCollect = getComment(imgName!!,"positions")
             targetNum =scores.size
-            binding.targetNumInput.setText(targetNum.toString())
+            binding.targetNumInput.text = targetNum.toString()
             val vectorsHold = getWhat(imgName!!,"vectors",".")
             for (i in 0 until targetNum) {
                 scoreTextList[i].setText(scores[i])
@@ -123,7 +124,8 @@ class PhotoProcess : AppCompatActivity() {
             val bytes = py.getModule("imageProcess").callAttr("getLabeledWholeTargetPaper")
                 .toJava(ByteArray::class.java)
             targetNum =py.getModule("imageProcess").callAttr("getTargetNum").toJava(String::class.java).toInt()
-
+            positionCollect = py.getModule("imageProcess").callAttr("getCenterLocation").toJava(String::class.java)
+            Log.d("wu",positionCollect)
             for (i in 0 until targetNum){
                 vectorCollect += py.getModule("imageProcess").callAttr("getCertainVector",i).toJava(String::class.java)
             }
@@ -131,7 +133,7 @@ class PhotoProcess : AppCompatActivity() {
             runOnUiThread {
                 // Stuff that updates the UI
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                binding.targetNumInput.setText(targetNum.toString())
+                binding.targetNumInput.text = targetNum.toString()
                 binding.imageViewProcess.setImageBitmap(bitmap)
                 for (i in 0 until targetNum) {
                     val score = py.getModule("imageProcess").callAttr("getCertainScore", i)
@@ -145,11 +147,14 @@ class PhotoProcess : AppCompatActivity() {
                         scoreTextList[i].setText(result.toString())
                     }
                 }
+                for (i in targetNum..9){
+                    scoreTextList[i].visibility= INVISIBLE
+                }
             }
         }
         else{
             runOnUiThread{
-                binding.targetNumInput.setText("0")
+                binding.targetNumInput.text = "0"
                 targetNum=0
             }
         }
@@ -215,9 +220,7 @@ class PhotoProcess : AppCompatActivity() {
             comment = ""
         }
         // Add to SQLite database
-        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum,vectorCollect.sliceArray(
-            0 until targetNum
-        )) } }
+        imgName?.let { comment?.let { it1 -> add2Database(it,scoreList, it1,index,year,month,day,targetNum,vectorCollect.sliceArray(0 until targetNum),positionCollect) } }
         finish()
     }
 
@@ -247,10 +250,10 @@ class PhotoProcess : AppCompatActivity() {
         return output
     }
 
-    private fun add2Database(imgName:String, scoreList: Array<Int>, comment:String, index:Int, year:Int, month: Int, day:Int,targetNum:Int,vectorCollect:Array<String>){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+    private fun add2Database(imgName:String, scoreList: Array<Int>, comment:String, index:Int, year:Int, month: Int, day:Int,targetNum:Int,vectorCollect:Array<String>,positionCollect:String){
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.writableDatabase
-        val values = contentValuesOf("filename" to imgName,"discipline" to index,"year" to year,"month" to month,"day" to day,"comment" to comment,"targetNum" to targetNum,"scores" to list2Str(scoreList),"vectors" to list2Str2(vectorCollect))
+        val values = contentValuesOf("filename" to imgName,"discipline" to index,"year" to year,"month" to month,"day" to day,"comment" to comment,"targetNum" to targetNum,"scores" to list2Str(scoreList),"vectors" to list2Str2(vectorCollect),"positions" to positionCollect)
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
         if (cursor.count>0){
@@ -267,16 +270,15 @@ class PhotoProcess : AppCompatActivity() {
     }
 
     @SuppressLint("Range")
-    private fun getComment(imgName:String):String{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+    private fun getComment(imgName:String,desiredKey:String = "comment" ):String{
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
 
-        var scores=""
         val cursor = db.query("ShootingRecords",null,"filename = ?",
             arrayOf<String>(imgName),null,null,null)
         if (cursor.moveToFirst()){
             do{
-                comment = cursor.getString(cursor.getColumnIndex("comment"))
+                comment = cursor.getString(cursor.getColumnIndex(desiredKey))
 //                Log.d("wu",displayText)
             } while (cursor.moveToNext())
         }
@@ -286,7 +288,7 @@ class PhotoProcess : AppCompatActivity() {
     }
     @SuppressLint("Range")
     private fun getWhat(imgName:String,what:String,split:String):Array<String>{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
 
         var scores=""
@@ -321,7 +323,7 @@ class PhotoProcess : AppCompatActivity() {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 if (seek.progress>0){
-                    binding.imageProcessSeekBarIndicator.setText(seek.progress.toString())
+                    binding.imageProcessSeekBarIndicator.text = seek.progress.toString()
                 }
                 else{
                     binding.imageProcessSeekBarIndicator.text = "Full target paper"
@@ -332,10 +334,6 @@ class PhotoProcess : AppCompatActivity() {
                 // write custom code for progress is started
             }
             override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
-//                Toast.makeText(this@RecordDetail,
-//                    "Progress is: " + seek.progress ,
-//                    Toast.LENGTH_SHORT).show()
                 if (seek.progress>0){
                     val i=seek.progress-1
                     if(Python.isStarted() && !editonly){
@@ -343,8 +341,8 @@ class PhotoProcess : AppCompatActivity() {
                         val bytes =py.getModule("imageProcess").callAttr("getCertainOriginalImageCut",i).toJava(ByteArray::class.java)
                         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
-                        val vector = py.getModule("imageProcess").callAttr("getCertainVector",i).toJava(String::class.java)
-                        Log.d("wu",vector)
+//                        val vector = py.getModule("imageProcess").callAttr("getCertainVector",i).toJava(String::class.java)
+//                        Log.d("wu",vector)
                         binding.imageViewProcess.setImageBitmap(bitmap)
                     }
                     else{
@@ -386,7 +384,7 @@ class PhotoProcess : AppCompatActivity() {
             working=false
             binding.imageProcessSeekBar.max=targetNum
             binding.allScoreWrap.visibility= VISIBLE
-            binding.targetNumWrap.visibility= VISIBLE
+            binding.targetNumWrap.visibility= if (targetNum!=0) VISIBLE else INVISIBLE
             binding.confirmEditedResult.text="confirm"
             binding.processLaterButton.visibility= GONE
             binding.imageProcessSeekBarIndicator.visibility= VISIBLE

@@ -50,7 +50,7 @@ class EditComment : AppCompatActivity() {
     }
 
     private fun add2Database(imgName:String, comment:String){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.writableDatabase
         val values = contentValuesOf("comment" to comment)
         val cursor = db.query("ShootingRecords",null,"filename = ?",
@@ -81,7 +81,7 @@ class EditComment : AppCompatActivity() {
 
     @SuppressLint("Range")
     private fun getComment(imgName:String):String{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
 
         var comment=""

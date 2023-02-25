@@ -86,7 +86,7 @@ class Setting : AppCompatActivity() {
                 }
 
                 // delete database
-                val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+                val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
                 val db = dbHelper.writableDatabase
                 val cursor = db.query("ShootingRecords",null,"filename = ?",
                     arrayOf<String>(photo),null,null,null)

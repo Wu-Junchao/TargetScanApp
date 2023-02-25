@@ -14,7 +14,8 @@ class MyDatabaseHelper (val context: Context,name:String,version:Int):SQLiteOpen
             "month tinyint,"+
             "day tinyint,"+
             "comment tinytext,"+
-            "vectors tinytext)"
+            "vectors tinytext,"+
+            "positions tinytext)"
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(create)

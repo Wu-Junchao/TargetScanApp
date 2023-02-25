@@ -125,7 +125,7 @@ class DataDisplay : AppCompatActivity() {
 
     @SuppressLint("Range")
     private fun getVectorFromDatabase(imgName:String):String{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
         var vectors=""
         val cursor = db.query("ShootingRecords",null,"filename = ?",
@@ -144,7 +144,7 @@ class DataDisplay : AppCompatActivity() {
 
     @SuppressLint("Range")
     private fun getCertainVectorFromDatabase(imgName:String,index: Int):String{
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         val db = dbHelper.readableDatabase
         var vector = ""
         val cursor = db.query("ShootingRecords",null,"filename = ?",

@@ -17,7 +17,7 @@ class OneTarget(object):
         # max corrsponding to whole target
         self.minRadius = CROPPED_SCALED_WIDTH
         self.minLocation = (0,0)
-        self.maxRadius = 0
+        self.maxRadius = 1
         self.maxLocation = (0,0)
         self.dist_in_rw = -1    # distance from edge to center in real world scale
         self.score=1
@@ -86,9 +86,9 @@ class OneTarget(object):
 
 def resize2Width(w,img):
     # w is the expexted width (horizontal side)
-    scale_percent = w/img.shape[1] # percent of original size
-    width = int(img.shape[1] * scale_percent)
-    height = int(img.shape[0] * scale_percent)
+    resize_scale_percent = w/img.shape[1] # percent of original size
+    width = int(img.shape[1] * resize_scale_percent)
+    height = int(img.shape[0] * resize_scale_percent)
     dim = (width, height)
     return cv2.resize(img,dim,interpolation = cv2.INTER_AREA)
 
@@ -162,7 +162,7 @@ def getCertainVector(index):
         s = str(resultsCollection[index].vector[0])+","+str(resultsCollection[index].vector[1])
         return s
     else:
-        return "?"
+        return ""
 
 def getCertainMaskedImageCut(index):
     global resultsCollection
@@ -190,6 +190,33 @@ def getLabeledWholeTargetPaper():
 def getWholeTargetPaper():
     global  originalImg
     _,buffer = cv2.imencode(".jpg",originalImg)
+    return io.BytesIO(buffer).getvalue()
+
+def getCenterLocation():
+    global  centerCollection
+    s=""
+    for center in centerCollection:
+        s+=str(center[0])+","+str(center[1])+","+str(center[2])+"."
+    if len(centerCollection)>0:
+        s=s[:-1]
+    return s
+
+def cropImg(content,xPos,yPos,radius):
+    # read from Kotlin
+    global coloredOriginalImage
+    content_file = io.BytesIO(content)
+    coloredOriginalImage = cv2.imdecode(np.frombuffer(content_file.getbuffer(), np.uint8), -1)
+    if coloredOriginalImage.shape[0]<coloredOriginalImage.shape[1]:
+        coloredOriginalImage =  cv2.rotate(coloredOriginalImage,cv2.ROTATE_90_CLOCKWISE)
+
+    # Block 1
+    SCALED_WIDTH = 300
+    EXTRA_RADIUS_ORIGINAL=20*(coloredOriginalImage.shape[1]//SCALED_WIDTH)
+    coloredOriginalImage = cv2.copyMakeBorder(coloredOriginalImage, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, EXTRA_RADIUS_ORIGINAL, cv2.BORDER_REPLICATE)
+
+    croppedImg = coloredOriginalImage[yPos-radius:yPos+radius,xPos-radius:xPos+radius]
+    croppedImg = cv2.rotate(croppedImg,cv2.ROTATE_90_COUNTERCLOCKWISE)
+    _,buffer = cv2.imencode(".jpg",croppedImg)
     return io.BytesIO(buffer).getvalue()
 
 
@@ -243,6 +270,7 @@ def main(content):
         radiusCollect.append(radius)
         distanceCollect.append((x,y))
 
+    global centerCollection
     p1=(0,0)
     p2=(0,0)
     if len(radiusCollect)==0:
@@ -320,7 +348,7 @@ def main(content):
         cord_x=int(x/scale_percent)
         cord_y=int(y/scale_percent)
         radius=int(radius/scale_percent)+EXTRA_RADIUS
-
+        centerCollection.append((cord_x,cord_y,radius))
         cv2.circle(mask, (cord_x,cord_y), radius, 255, -1)
         masked = cv2.bitwise_and(255-img_closing, 255-img_closing, mask=mask)
         masked = cv2.bitwise_not(masked, masked, mask=255-mask)
@@ -371,3 +399,4 @@ originalImg = None
 originalImgSmall = None
 resultsCollection= None
 coloredOriginalImage = None
+centerCollection = []

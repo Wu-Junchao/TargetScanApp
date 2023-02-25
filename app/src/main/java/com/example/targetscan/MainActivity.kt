@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeDatabase(){
-        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",3)
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
         dbHelper.writableDatabase
     }
 
