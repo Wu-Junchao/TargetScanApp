@@ -228,9 +228,7 @@ class RecordDetail : AppCompatActivity() {
             val bytes = py.getModule("imageProcess").callAttr("cropImg",content,certainPosition[0].toInt(),certainPosition[1].toInt(),certainPosition[2].toInt()).toJava(ByteArray::class.java)
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
             binding.imageDetail.setImageBitmap(bitmap)
-//            binding.imageDetail.scaleType  = ImageView.ScaleType.FIT_CENTER
-//            val croppedImg = Bitmap.createBitmap(originalImg,certainPosition[0].toInt()-150,certainPosition[1].toInt()-150,300,300)
-//            binding.imageDetail.setImageBitmap(croppedImg)
+            binding.imageDetail.scaleType = ImageView.ScaleType.FIT_CENTER
         }else{
             if(!Python.isStarted()){
                 Python.start(AndroidPlatform(this))

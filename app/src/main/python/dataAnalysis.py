@@ -51,7 +51,7 @@ def drawScoreGraph(vectors,scores):
         for index in range(len(vectors)):
             circle = plt.Circle((centerList[index][0],centerList[index][1]),170, color = "gray",fill=False)
             ax.add_patch(circle)
-            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index),fontsize=15,color="gray",rotation=270)
+            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index+1),fontsize=15,color="gray",rotation=270)
             # if vectors[index][0]==999:
             #     ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
             if scores[index]<=5:
@@ -87,7 +87,7 @@ def drawArrowGraph(vectors,scores):
         for index in range(len(vectors)):
             circle = plt.Circle((centerList[index][0],centerList[index][1]),170, color = "gray",fill=False)
             ax.add_patch(circle)
-            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index),fontsize=15,color="gray",rotation=270)
+            ax.text(centerList[index][0]+40,centerList[index][1]-100,str(index+1),fontsize=15,color="gray",rotation=270)
             if vectors[index][0]==999:
                 ax.scatter(centerList[index][0],centerList[index][1],70,marker="x",color=colorList[0])
             elif vectors[index][0]==888:
