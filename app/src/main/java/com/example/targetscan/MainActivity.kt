@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Shooting Records"
 
+
         // Initialize shared preference XML
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         val editor = access.edit()
@@ -141,8 +142,8 @@ class MainActivity : AppCompatActivity() {
 //                    Log.d("wu",month)
                     setupAdapter(year,month)
                 },
-                selectedYear = calendar.get(Calendar.YEAR),
-                selectedMonth = calendar.get(Calendar.MONTH)
+                selectedYear = year.toInt(),
+                selectedMonth = month.toInt()-1
 
             )
                 .setMinMonth(Calendar.JANUARY)

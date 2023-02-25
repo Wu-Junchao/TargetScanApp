@@ -84,7 +84,7 @@ class DataDisplay : AppCompatActivity() {
 
                 val fileDate = LocalDate.of(year,month,day)
                 if (fileDate in startTime..endTime){
-                    if (access.getString(photo,"")==getString(R.string.processed_text)){
+                    if (access.getString(photo,"")==getString(R.string.processed_text) && checkTargetNum(photo)){
                         returnList+=photo
                     }
                 }
@@ -105,7 +105,7 @@ class DataDisplay : AppCompatActivity() {
             var acc = 0
             while (index>=0 && (acc<=recordNum || recordNum==42)){
 //                Log.d("wu",photoList[index])
-                if (access.getString(photoList[index],"")==getString(R.string.processed_text)){
+                if (access.getString(photoList[index],"")==getString(R.string.processed_text) && checkTargetNum(photoList[index])){
                     returnList+=photoList[index]
                     index-=1
                     acc+=1
@@ -140,6 +140,28 @@ class DataDisplay : AppCompatActivity() {
         cursor.close()
         db.close()
         return vectors
+    }
+
+    @SuppressLint("Range")
+    private fun checkTargetNum(imgName:String):Boolean{
+        // only use 10 target record when display by position
+        if (!typeFlg){
+            return true
+        }
+        val dbHelper = MyDatabaseHelper(this,"TargetScan.db",4)
+        var targetNum = 0
+        val db = dbHelper.readableDatabase
+        var vectors=""
+        val cursor = db.query("ShootingRecords",null,"filename = ?",
+            arrayOf<String>(imgName),null,null,null)
+        if (cursor.moveToFirst()){
+            do{
+                targetNum = cursor.getInt(cursor.getColumnIndex("targetNum"))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return targetNum==10
     }
 
     @SuppressLint("Range")

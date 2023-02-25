@@ -119,11 +119,13 @@ def getLocation(distanceCollect,height,width):
     # left-upper and right-bottom
     temp = [x**2+y**2 for (x,y) in distanceCollect]
     index = np.argmin(temp)
-    minx = distanceCollect[index][0]
+    miny = distanceCollect[index][1]
     index =np.argmax(temp)
-    maxx=distanceCollect[index][0]
-    GAP = abs(int(maxx-minx)//5)
-    for col in range(50,width+50,50):
+    maxy=distanceCollect[index][1]
+    GAP = abs(int(maxy-miny)//8)
+    if GAP==0:
+        GAP==30
+    for col in range(width,0,-50):
         for row in range(GAP,height+GAP,GAP):
             if len(distanceCollect)==0:
                 print(outputIndex)
@@ -133,12 +135,12 @@ def getLocation(distanceCollect,height,width):
                     continue
                 y=distanceCollect[i][0]
                 x=distanceCollect[i][1]
-                if x<row and y<col:
+                if x<row and y>col-50:
                     outputIndex.append(i)
                     distanceCollect[i]=False
                     break
     # print(outputIndex)
-    outputIndex = outputIndex[6:] + outputIndex[4:6] + outputIndex[0:4]
+    # outputIndex = outputIndex[6:] + outputIndex[4:6] + outputIndex[0:4]
     return outputIndex
 
 def getTargetNum():
