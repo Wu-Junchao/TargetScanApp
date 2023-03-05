@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -32,6 +33,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.targetscan.MainActivity.Companion.REQUEST_CODE_PERMISSIONS
 import com.example.targetscan.databinding.ActivityTakePhoto2Binding
+import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -41,9 +43,13 @@ class TakePhoto2 : AppCompatActivity() {
     lateinit var outputImage: File
     lateinit var discplineList: MutableList<String>
     var nextID = 1
-
+    private val pickImg = 100
     private var imageCapture: ImageCapture? = null
 
+    private var index= 0
+    private var year = 2023
+    private var month = 1
+    private var day = 1
     private lateinit var cameraExecutor: ExecutorService
 
     private fun dateFormat(year: Int, month: Int, day: Int): String {
@@ -202,10 +208,10 @@ class TakePhoto2 : AppCompatActivity() {
         supportActionBar?.title = "Add new record"
 
         discplineList = mutableListOf<String>("Rifle shoot")
-        val index = intent.getIntExtra("index", 0)
-        val year = intent.getIntExtra("year", 2023)
-        val month = intent.getIntExtra("month", 1)
-        val day = intent.getIntExtra("day", 1)
+        index = intent.getIntExtra("index", 0)
+        year = intent.getIntExtra("year", 2023)
+        month = intent.getIntExtra("month", 1)
+        day = intent.getIntExtra("day", 1)
         val comment = intent.getStringExtra("comment")
         binding.info1.text = "Discipline: ${discplineList[index]}"
         binding.info2.text = "Date: $year.$month.$day"
@@ -271,6 +277,11 @@ class TakePhoto2 : AppCompatActivity() {
             finish()
         }
 
+        binding.uploadBtn.setOnClickListener {
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, pickImg)
+        }
+
         binding.confirmPhotoBtn.setOnClickListener {
             editor.putString(
                 "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg",
@@ -334,5 +345,32 @@ class TakePhoto2 : AppCompatActivity() {
             }
         }
         return result+1
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == pickImg) {
+            imageUri = data?.data!!
+            val inputStream = contentResolver.openInputStream(imageUri)
+            val originalImg = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+            binding.imageView.setImageBitmap(originalImg)
+            binding.confirmPhotoBtn.isVisible=true
+            binding.takePhotoBtn.text="Retake photo"
+            binding.cameraPreview.visibility=GONE
+            binding.imageView.visibility= VISIBLE
+            outputImage = File(
+                externalCacheDir,
+                "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg"
+            )
+            if (outputImage.exists()) {
+                outputImage.delete()
+            }
+            outputImage.createNewFile()
+            val fileOutputStream = FileOutputStream(outputImage)
+            originalImg.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+        }
     }
 }
