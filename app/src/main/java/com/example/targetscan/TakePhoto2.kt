@@ -22,9 +22,7 @@ import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.core.ImageCapture.FLASH_MODE_ON
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
-import androidx.camera.core.processing.SurfaceProcessorNode.In
 import androidx.core.content.FileProvider
-import androidx.core.view.isVisible
 import java.io.File
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView

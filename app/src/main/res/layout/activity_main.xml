@@ -22,11 +22,6 @@
             android:background="?colorPrimary"/>
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/viewDataAnalysisButton"
-            android:text="Data analysis"/>
 
         <Button
             android:id="@+id/monthSelector"

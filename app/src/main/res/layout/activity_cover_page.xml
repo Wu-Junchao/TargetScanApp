@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CoverPage"
+    android:background="@color/appBackground">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar3"
+        android:background="?colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/toolbar3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/coverGraph"
+        android:src="@drawable/antonio_grosz_hmmvzplwm4e_unsplash"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:padding="5dp"
+        android:paddingEnd="15dp"
+        android:text="TargetScan"
+        android:gravity="end"
+        android:textSize="36sp"
+        android:textColor="@color/amber_50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/coverGraph"
+        app:layout_constraintVertical_bias="0.7"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainButtonsWrap1"
+        app:layout_constraintTop_toBottomOf="@id/coverGraph"
+        app:layout_constraintBottom_toTopOf="@id/mainButtonsWrap2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/recordBtn"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/button_style"
+            android:text="🗂️\n\nRecords"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/newBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="➕\n\nAdd new"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/recordBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/newBtn"
+            android:background="@drawable/button_style"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainButtonsWrap2"
+        app:layout_constraintTop_toBottomOf="@id/mainButtonsWrap1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="⚙️\n\nSetting"
+            android:id="@+id/settingBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/analysisBtn"
+            android:background="@drawable/button_style"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"/>
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="📈\n\nAnalysis"
+            android:id="@+id/analysisBtn"
+            app:layout_constraintStart_toEndOf="@id/settingBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/button_style"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

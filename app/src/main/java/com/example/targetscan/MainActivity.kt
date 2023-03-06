@@ -124,11 +124,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.viewDataAnalysisButton.setOnClickListener {
-            val intent = Intent(this,DataDisplay::class.java)
-            startActivity(intent)
-        }
-
         binding.monthSelector.setOnClickListener {
 
             val dialog = MonthYearPickerDialog.Builder(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Style.MonthYearPickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
-        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">@color/appBackground</item>
         <item name="buttonBarNegativeButtonStyle">@style/Style.DialogButton.Black</item>
         <item name="buttonBarPositiveButtonStyle">@style/Style.DialogButton.primary</item>
         <item name="headerBackgroundColor">@color/purple_200</item>
