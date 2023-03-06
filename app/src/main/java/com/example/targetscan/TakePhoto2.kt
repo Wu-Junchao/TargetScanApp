@@ -14,8 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -184,7 +183,8 @@ class TakePhoto2 : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d("wu", msg)
-                    binding.confirmPhotoBtn.isVisible=true
+                    binding.confirmPhotoBtn.visibility = VISIBLE
+                    binding.rotatePhotoBtn.visibility= VISIBLE
                     binding.takePhotoBtn.text="Retake photo"
                     binding.cameraPreview.visibility=GONE
                     binding.imageView.visibility= VISIBLE
@@ -242,7 +242,8 @@ class TakePhoto2 : AppCompatActivity() {
             if (binding.takePhotoBtn.text.toString() == "Retake photo" && allPermissionsGranted()) {
                 binding.cameraPreview.visibility= VISIBLE
                 binding.imageView.visibility= GONE
-                binding.confirmPhotoBtn.isVisible=false
+                binding.confirmPhotoBtn.visibility = INVISIBLE
+                binding.rotatePhotoBtn.visibility = INVISIBLE
                 binding.takePhotoBtn.text="take photo"
                 startCamera()
 
@@ -303,6 +304,28 @@ class TakePhoto2 : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        binding.rotatePhotoBtn.setOnClickListener {
+            outputImage =
+                File(externalCacheDir, "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg")
+            if (!outputImage.exists()) {
+                // do nothing
+            }
+            else{
+                imageUri =FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
+                val inputStream = contentResolver.openInputStream(imageUri)
+                var originalImg = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
+                outputImage.delete()
+                val rotatedImg = rotateBitmap(originalImg,90)
+                outputImage.createNewFile()
+                val fileOutputStream = FileOutputStream(outputImage)
+                rotatedImg.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream)
+                fileOutputStream.flush()
+                fileOutputStream.close()
+                binding.imageView.setImageBitmap(rotatedImg)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -355,9 +378,10 @@ class TakePhoto2 : AppCompatActivity() {
             val originalImg = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
             binding.imageView.setImageBitmap(originalImg)
-            binding.confirmPhotoBtn.isVisible=true
+            binding.confirmPhotoBtn.visibility = VISIBLE
+            binding.rotatePhotoBtn.visibility = VISIBLE
             binding.takePhotoBtn.text="Retake photo"
-            binding.cameraPreview.visibility=GONE
+            binding.cameraPreview.visibility= GONE
             binding.imageView.visibility= VISIBLE
             outputImage = File(
                 externalCacheDir,
