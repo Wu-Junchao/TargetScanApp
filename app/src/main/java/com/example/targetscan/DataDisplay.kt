@@ -34,7 +34,7 @@ class DataDisplay : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        supportActionBar?.title = "Data analysis"
+        supportActionBar?.title = "Data Analysis"
 
         access = getSharedPreferences("data", Context.MODE_PRIVATE)
         setTypeToggle()
@@ -292,12 +292,12 @@ class DataDisplay : AppCompatActivity() {
                 // The toggle is enabled
                 typeFlg = true
                 binding.indexSeekbarWrap.visibility = VISIBLE
-                toggle.text="By position"
+                toggle.text= getString(R.string.targetPositionSwitch2)
             } else {
                 // The toggle is disabled
                 typeFlg=false
                 binding.indexSeekbarWrap.visibility = INVISIBLE
-                toggle.text = "All together"
+                toggle.text = getString(R.string.targetPositionSwitch1)
             }
         }
     }
@@ -391,11 +391,11 @@ class DataDisplay : AppCompatActivity() {
             if (isChecked) {
                 // The toggle is enabled
                 rangeFlg=true
-                toggle.text="By record number"
+                toggle.text=getString(R.string.targetRangeSwitch2)
             } else {
                 // The toggle is disabled
                 rangeFlg = false
-                toggle.text = "by date range"
+                toggle.text = getString(R.string.targetRangeSwitch1)
                 binding.rangeSeekbarIndicator.text = ""
             }
             updateIndicator()

@@ -54,7 +54,7 @@
             android:id="@+id/recordBtn"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/button_style"
+            android:background="@drawable/large_button_style"
             android:text="🗂️\n\nRecords"
             android:textColor="@color/textColor"
             android:textSize="18sp"
@@ -72,7 +72,7 @@
             app:layout_constraintStart_toEndOf="@id/recordBtn"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/newBtn"
-            android:background="@drawable/button_style"
+            android:background="@drawable/large_button_style"
             android:textColor="@color/textColor"
             android:textSize="18sp"
             />
@@ -97,7 +97,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/analysisBtn"
-            android:background="@drawable/button_style"
+            android:background="@drawable/large_button_style"
             android:textColor="@color/textColor"
             android:textSize="18sp"/>
         <Button
@@ -109,7 +109,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/button_style"
+            android:background="@drawable/large_button_style"
             android:textColor="@color/textColor"
             android:textSize="18sp"
             />

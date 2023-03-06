@@ -5,4 +5,9 @@
     <string name="start_capture">Start Capture</string>
     <string name="stop_capture">Stop Capture</string>
     <string name="processed_text">Processed</string>
+    <string name="targetPositionSwitch1">All Targets</string>
+    <string name="targetPositionSwitch2">By Position</string>
+    <string name="targetRangeSwitch1">Time Period</string>
+    <string name="targetRangeSwitch2">Num of Records</string>
+    <string name="DataAnalysisIntro">Choose records in a range, and create a visual heatmap to observe the spread of bullet impacts, allowing you to analyze the distribution patterns.</string>
 </resources>

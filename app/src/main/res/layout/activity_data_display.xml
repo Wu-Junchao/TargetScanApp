@@ -16,14 +16,27 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
+        android:id="@+id/heatmapImg"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/heatmapImg"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tutorial"
+        app:layout_constraintTop_toBottomOf="@id/heatmapImg"
+        app:layout_constraintBottom_toTopOf="@id/switchesWrap"
+        android:text="@string/DataAnalysisIntro"
+        android:textSize="16sp"
+        android:textColor="@color/gray"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,7 +52,9 @@
             android:id="@+id/rangeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Range"
+            android:text="@string/targetRangeSwitch1"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +64,9 @@
             android:id="@+id/typeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All together"
+            android:text="@string/targetPositionSwitch1"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/rangeSwitch"
@@ -75,6 +92,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/rangeSeekbar"
             android:text="2 week"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
             />
 
         <SeekBar
@@ -111,6 +130,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/indexSeekbar"
             android:text="Location 1"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
             />
 
         <SeekBar
@@ -146,16 +167,21 @@
             app:layout_constraintEnd_toStartOf="@id/processHeatmapButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/backButton"/>
+            android:id="@+id/backButton"
+            android:background="@drawable/button_style2"
+            android:textColor="@color/textColor"
+            />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Process"
+            android:text="Show heatmap"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/backButton"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/processHeatmapButton"/>
+            android:id="@+id/processHeatmapButton"
+            android:background="@drawable/button_style2"
+            android:textColor="@color/textColor"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

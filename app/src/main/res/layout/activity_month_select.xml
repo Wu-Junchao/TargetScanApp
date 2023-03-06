@@ -7,8 +7,8 @@
     tools:context=".MonthSelect">
 
     <LinearLayout
-        android:layout_width="408dp"
-        android:layout_height="728dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

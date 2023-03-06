@@ -17,6 +17,7 @@
         android:id="@+id/shootingName"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
+        android:textColor="@color/textColor"
         />
 
     <TextView
@@ -24,5 +25,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/processLabel"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="30dp"/>
+        android:layout_marginLeft="30dp"
+        android:textColor="@color/textColor"/>
 </LinearLayout>
