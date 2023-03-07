@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Style.MonthYearPickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
-        <item name="android:backgroundTint">@color/appBackground</item>
+        <item name="android:background">@color/white_40</item>
         <item name="buttonBarNegativeButtonStyle">@style/Style.DialogButton.Black</item>
         <item name="buttonBarPositiveButtonStyle">@style/Style.DialogButton.primary</item>
-        <item name="headerBackgroundColor">@color/purple_200</item>
+        <item name="headerBackgroundColor">@color/lime_50</item>
         <item name="headerTextColor">#66000000</item>
-        <item name="headerTextColorSelected">@color/black</item>
-        <item name="monthBackgroundColorSelected">@color/purple_200</item>
-        <item name="monthTextColor">@color/black</item>
+        <item name="headerTextColorSelected">@color/textColor</item>
+        <item name="monthBackgroundColorSelected">@color/lime_50</item>
+        <item name="monthTextColor">@color/textColor</item>
         <item name="monthTextColorDisabled">#4F000000</item>
-        <item name="monthTextColorSelected">@color/black</item>
-        <item name="yearTextColor">@color/black</item>
-        <item name="yearTextColorSelected">@color/purple_200</item>
+        <item name="monthTextColorSelected">@color/textColor</item>
+        <item name="yearTextColor">@color/textColor</item>
+        <item name="yearTextColorSelected">@color/light_green</item>
+
     </style>
     <style name="Style.DialogButton.Black" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="Style.DialogButton.primary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/design_default_color_primary_variant</item>
+        <item name="android:textColor">@color/light_green</item>
     </style>
 
-    <style name="Style.DialogButton.Red" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/red</item>
-    </style>
-
-    <style name="Style.DialogButton.White" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/white</item>
-    </style>
 </resources>

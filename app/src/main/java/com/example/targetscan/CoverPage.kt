@@ -13,7 +13,7 @@ class CoverPage : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar3)
-        supportActionBar?.title = "Welcome"
+        supportActionBar?.title = "Welcome to TargetScan : )"
 
         binding.newBtn.setOnClickListener {
             val intent = Intent(this,FillInformation::class.java)

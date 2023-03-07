@@ -48,6 +48,7 @@ class TakePhoto2 : AppCompatActivity() {
     private var month = 1
     private var day = 1
     private lateinit var cameraExecutor: ExecutorService
+    private var confirmEnable = false
 
     private fun dateFormat(year: Int, month: Int, day: Int): String {
         var m = if (month in 1..9) {
@@ -181,10 +182,10 @@ class TakePhoto2 : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d("wu", msg)
-                    binding.confirmPhotoBtn.visibility = VISIBLE
-                    binding.rotatePhotoBtn.visibility= VISIBLE
+                    confirmEnable=true
+//                    binding.rotatePhotoBtn.isClickable= true
                     binding.takePhotoBtn.text="Retake photo"
-                    binding.cameraPreview.visibility=GONE
+                    binding.cameraPreview.visibility= INVISIBLE
                     binding.imageView.visibility= VISIBLE
                     val inputStream = contentResolver.openInputStream(imageUri)
                     val originalImg = BitmapFactory.decodeStream(inputStream)
@@ -203,17 +204,15 @@ class TakePhoto2 : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar2)
-        supportActionBar?.title = "Add new record"
+        supportActionBar?.title = "Add New Record"
 
-        discplineList = mutableListOf<String>("Rifle shoot")
+        discplineList = mutableListOf<String>("Small-bore Rifle Shooting")
         index = intent.getIntExtra("index", 0)
         year = intent.getIntExtra("year", 2023)
         month = intent.getIntExtra("month", 1)
         day = intent.getIntExtra("day", 1)
         val comment = intent.getStringExtra("comment")
-        binding.info1.text = "Discipline: ${discplineList[index]}"
-        binding.info2.text = "Date: $year.$month.$day"
-        binding.info3.text = "Comment: $comment"
+        binding.info1.text = "Discipline: ${discplineList[index]}\t\t\tDate: $year.$month.$day"
         val concatDate = "$index${dateFormat(year, month, day)}"
         val access = getSharedPreferences("data", Context.MODE_PRIVATE)
         val editor = access.edit()
@@ -239,9 +238,9 @@ class TakePhoto2 : AppCompatActivity() {
         binding.takePhotoBtn.setOnClickListener {
             if (binding.takePhotoBtn.text.toString() == "Retake photo" && allPermissionsGranted()) {
                 binding.cameraPreview.visibility= VISIBLE
-                binding.imageView.visibility= GONE
-                binding.confirmPhotoBtn.visibility = INVISIBLE
-                binding.rotatePhotoBtn.visibility = INVISIBLE
+                binding.imageView.visibility= INVISIBLE
+                confirmEnable=false
+//                binding.rotatePhotoBtn.isClickable = false
                 binding.takePhotoBtn.text="take photo"
                 startCamera()
 
@@ -282,47 +281,59 @@ class TakePhoto2 : AppCompatActivity() {
         }
 
         binding.confirmPhotoBtn.setOnClickListener {
-            editor.putString(
-                "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg",
-                comment
-            )
-            totalNum += 1
-            editor.putInt("totalNum", totalNum)
-            editor.apply()
-            val intent = Intent(this, PhotoProcess::class.java)
-            intent.putExtra("index", index)
-            intent.putExtra("year", year)
-            intent.putExtra("month", month)
-            intent.putExtra("day", day)
-            intent.putExtra("comment", comment)
-            intent.putExtra(
-                "ImgName",
-                "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg"
-            )
-            startActivity(intent)
-            finish()
+            if (confirmEnable){
+                editor.putString(
+                    "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg",
+                    comment
+                )
+                totalNum += 1
+                editor.putInt("totalNum", totalNum)
+                editor.apply()
+                val intent = Intent(this, PhotoProcess::class.java)
+                intent.putExtra("index", index)
+                intent.putExtra("year", year)
+                intent.putExtra("month", month)
+                intent.putExtra("day", day)
+                intent.putExtra("comment", comment)
+                intent.putExtra(
+                    "ImgName",
+                    "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg"
+                )
+                startActivity(intent)
+                finish()
+            }
+            else{
+                Toast.makeText(this, "Please take a photo or upload an image first.", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         binding.rotatePhotoBtn.setOnClickListener {
-            outputImage =
-                File(externalCacheDir, "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg")
-            if (!outputImage.exists()) {
-                // do nothing
+            if (confirmEnable){
+                outputImage =
+                    File(externalCacheDir, "$index${dateFormat(year, month, day)}${int2ThreeDigits(nextID)}.jpg")
+                if (!outputImage.exists()) {
+                    // do nothing
+                }
+                else{
+                    imageUri =FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
+                    val inputStream = contentResolver.openInputStream(imageUri)
+                    var originalImg = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+                    outputImage.delete()
+                    val rotatedImg = rotateBitmap(originalImg,90)
+                    outputImage.createNewFile()
+                    val fileOutputStream = FileOutputStream(outputImage)
+                    rotatedImg.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream)
+                    fileOutputStream.flush()
+                    fileOutputStream.close()
+                    binding.imageView.setImageBitmap(rotatedImg)
+                }
             }
             else{
-                imageUri =FileProvider.getUriForFile(this,"com.example.cameraalbumtest.fileprovider",outputImage)
-                val inputStream = contentResolver.openInputStream(imageUri)
-                var originalImg = BitmapFactory.decodeStream(inputStream)
-                inputStream?.close()
-                outputImage.delete()
-                val rotatedImg = rotateBitmap(originalImg,90)
-                outputImage.createNewFile()
-                val fileOutputStream = FileOutputStream(outputImage)
-                rotatedImg.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream)
-                fileOutputStream.flush()
-                fileOutputStream.close()
-                binding.imageView.setImageBitmap(rotatedImg)
+                Toast.makeText(this, "Please take a photo or upload an image first.", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
 
@@ -376,10 +387,10 @@ class TakePhoto2 : AppCompatActivity() {
             val originalImg = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
             binding.imageView.setImageBitmap(originalImg)
-            binding.confirmPhotoBtn.visibility = VISIBLE
-            binding.rotatePhotoBtn.visibility = VISIBLE
+            confirmEnable=true
+//            binding.rotatePhotoBtn.isClickable = true
             binding.takePhotoBtn.text="Retake photo"
-            binding.cameraPreview.visibility= GONE
+            binding.cameraPreview.visibility= INVISIBLE
             binding.imageView.visibility= VISIBLE
             outputImage = File(
                 externalCacheDir,

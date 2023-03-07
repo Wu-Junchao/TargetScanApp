@@ -2,6 +2,7 @@ package com.example.targetscan
 
 
 import android.content.Intent
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter<ShootRecordAdapter.ViewHolder>() {
+class ShootRecordAdapter(private val shootList:List<ShootRecord>) : RecyclerView.Adapter<ShootRecordAdapter.ViewHolder>() {
     inner class ViewHolder(view:View):RecyclerView.ViewHolder(view){
         val shootImage: ImageView = view.findViewById(R.id.shootingImage)
         val shootName: TextView = view.findViewById(R.id.shootingName)
@@ -31,20 +32,24 @@ class ShootRecordAdapter(val shootList:List<ShootRecord>) : RecyclerView.Adapter
             parent.context.startActivity(intent)
 
         }
-        viewHolder.itemView.setOnLongClickListener {
-            val position = viewHolder.adapterPosition
-            val shootRecord = shootList[position]
-            Toast.makeText(parent.context, "You long click num ${position}", Toast.LENGTH_SHORT).show()
-            true
-        }
+//        viewHolder.itemView.setOnLongClickListener {
+//            val position = viewHolder.adapterPosition
+//            val shootRecord = shootList[position]
+//            Toast.makeText(parent.context, "You long click num ${position}", Toast.LENGTH_SHORT).show()
+//            true
+//        }
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val shoot = shootList[position]
-        holder.shootName.text=shoot.name
+        holder.shootName.text="ID: "+shoot.name.slice(11..13)
         holder.shootImage.setImageResource(shoot.imageId)
-        holder.shootProcessLabel.text = shoot.processLabel
+        holder.shootProcessLabel.text = if (shoot.processLabel=="Processed" ) {
+            ""
+        }else{
+            "Waiting for process..."
+        }
     }
     override fun getItemCount(): Int {
         return shootList.size

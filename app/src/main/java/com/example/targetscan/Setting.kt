@@ -18,7 +18,7 @@ class Setting : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "Setting"
+        supportActionBar?.title = "Settings"
 
         setOrderSwitch()
         binding.deleteButton.setOnClickListener {

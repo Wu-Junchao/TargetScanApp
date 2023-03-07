@@ -5,9 +5,16 @@
     <string name="start_capture">Start Capture</string>
     <string name="stop_capture">Stop Capture</string>
     <string name="processed_text">Processed</string>
+    <string name="rifle_shoot">Small-bore Rifle Shooting</string>
     <string name="targetPositionSwitch1">All Targets</string>
     <string name="targetPositionSwitch2">By Position</string>
     <string name="targetRangeSwitch1">Time Period</string>
     <string name="targetRangeSwitch2">Num of Records</string>
     <string name="DataAnalysisIntro">Choose records in a range, and create a visual heatmap to observe the spread of bullet impacts, allowing you to analyze the distribution patterns.</string>
+    <string name="graphDisplaySwitch1">Rendered</string>
+    <string name="graphDisplaySwitch2">Original</string>
+    <string name="full_target_paper">Full Target Paper</string>
+    <string name="photo_guide">Try to position your phone directly above the target paper to avoid distorted targets.\nTry to capture the targets as large as possible.</string>
+    <string name="photo_guide2">The top side of your phone should correspond to the left side of the target paper (in landscape view).If the text is upside-down, rotate the paper.\nFlash light will be used to avoid shadow.</string>
+    <string name="copyright">Designed by Junchao Wu\nVersion 1.0</string>
 </resources>

@@ -323,10 +323,10 @@ class PhotoProcess : AppCompatActivity() {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 if (seek.progress>0){
-                    binding.imageProcessSeekBarIndicator.text = seek.progress.toString()
+                    binding.imageProcessSeekBarIndicator.text = "Position "+seek.progress.toString()
                 }
                 else{
-                    binding.imageProcessSeekBarIndicator.text = "Full target paper"
+                    binding.imageProcessSeekBarIndicator.text = getString(R.string.full_target_paper)
                 }
             }
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecordDetail">
+    tools:context=".RecordDetail"
+    android:background="@color/appBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
@@ -32,6 +33,8 @@
         android:layout_marginRight="20dp"
         android:text="Discipline:\nDate:\nComment:"
         android:textSize="20dp"
+        android:lineSpacingMultiplier="1.3"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_detail"
@@ -66,6 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Process"
+            android:textColor="@color/textColor"
+            android:background="@drawable/button_style2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +80,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/editCommentButton"
             android:text="Edit Comment"
+            android:textColor="@color/textColor"
+            android:background="@drawable/button_style2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/backButton"
@@ -85,17 +92,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/trash_bin"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/editCommentButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/button_style1"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/seekbarIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Original Image"
+        android:text="@string/full_target_paper"
+        android:textColor="@color/textColor"
+        android:textSize="17sp"
         app:layout_constraintTop_toBottomOf="@id/InformationCollect"
         app:layout_constraintBottom_toTopOf="@id/seekBar"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +128,9 @@
         android:id="@+id/singleTargetViewSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="rendered"
+        android:text="@string/graphDisplaySwitch1"
+        android:textSize="17sp"
+        android:textColor="@color/textColor"
         app:layout_constraintStart_toEndOf="@id/seekbarIndicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/InformationCollect"

@@ -13,6 +13,6 @@
         android:textStyle="bold"
         android:textColor="@color/textColor"
         android:padding="12dp"
-        android:background="@color/buttonStrike"
+        android:background="@color/lime_50"
         app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

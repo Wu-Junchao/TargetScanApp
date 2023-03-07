@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
         android:width="4dp"
-        android:color="@color/green" />
+        android:color="@color/lime_50" />
 
     <solid android:color="@color/buttonBackground" />
 
@@ -12,5 +12,5 @@
         android:bottom="1dp"
         android:top="1dp" />
 
-    <corners android:radius="25dp"/>
+    <corners android:radius="15dp"/>
 </shape>

@@ -28,7 +28,7 @@ class RecordDetail : AppCompatActivity() {
     lateinit var outputImage: File
     lateinit var imageUri : Uri
     var displayText = ""
-    val disciplineList = mutableListOf<String>("Rifle shoot")
+    val disciplineList = mutableListOf<String>("Small-bore Rifle Shooting")
     var flg = false
     var imgName = ""
     lateinit var vectors :String
@@ -123,7 +123,7 @@ class RecordDetail : AppCompatActivity() {
 //                displayText+="\nID: "
 //                displayText+=imgName.slice(11..13)
                 displayText+="\n"
-                displayText+="Comment: "
+                displayText+="Comment: \n"
                 displayText+=cursor.getString(cursor.getColumnIndex("comment"))
                 targetNum = cursor.getInt(cursor.getColumnIndex("targetNum"))
                 vectors = cursor.getString(cursor.getColumnIndex("vectors"))
@@ -149,7 +149,7 @@ class RecordDetail : AppCompatActivity() {
             str += "Date: ${imgName.slice(1..10)}\n"
 //            str += "ID: ${imgName.slice(11..13)}\n"
 
-            str += "Comment: ${comment}"
+            str += "Comment: \n${comment}"
             binding.InformationCollect.text=str
             binding.seekBar.visibility=GONE
             binding.seekbarIndicator.visibility= GONE
@@ -278,17 +278,17 @@ class RecordDetail : AppCompatActivity() {
                 }
                 else if (seek.progress==0){
                     binding.arrowScoreSwitch.visibility= INVISIBLE
-                    binding.seekbarIndicator.text = "Full target paper"
+                    binding.seekbarIndicator.text = getString(R.string.full_target_paper)
                     binding.singleTargetViewSwitch.visibility = INVISIBLE
                 }
                 else{
                     binding.arrowScoreSwitch.visibility= VISIBLE
                     binding.singleTargetViewSwitch.visibility = INVISIBLE
                     if (arrowToggle){
-                        binding.seekbarIndicator.text = "Arrow graph"
+                        binding.seekbarIndicator.text = "Arrow Graph"
                     }
                     else{
-                        binding.seekbarIndicator.text = "Score graph"
+                        binding.seekbarIndicator.text = "Score Graph"
                     }
                 }
             }
@@ -327,13 +327,13 @@ class RecordDetail : AppCompatActivity() {
                 getScoreImage(vectors,scores)
                 toggle.text="Score"
                 arrowToggle=false
-                binding.seekbarIndicator.text = "Score graph"
+                binding.seekbarIndicator.text = "Score Graph"
             } else {
                 // The toggle is disabled
                 getArrowImage(vectors,scores)
                 toggle.text="Arrow"
                 arrowToggle=true
-                binding.seekbarIndicator.text = "Arrow graph"
+                binding.seekbarIndicator.text = "Arrow Graph"
             }
         }
 
@@ -343,12 +343,12 @@ class RecordDetail : AppCompatActivity() {
             if (isChecked) {
                 // The toggle is enabled
 
-                toggle2.text="original"
+                toggle2.text=getString(R.string.graphDisplaySwitch2)
                 renderedFlg=true
                 changeImage(parsedVectors[seek.progress-2],seek.progress-2)
             } else {
                 // The toggle is disabled
-                toggle2.text="rendered"
+                toggle2.text=getString(R.string.graphDisplaySwitch1)
                 renderedFlg=false
                 changeImage(parsedVectors[seek.progress-2],seek.progress-2)
 

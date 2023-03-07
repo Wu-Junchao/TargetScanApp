@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class DateRecordAdapter(val dateList:List<DateRecord>) : RecyclerView.Adapter<DateRecordAdapter.ViewHolder>() {
+class DateRecordAdapter(private val dateList:List<DateRecord>) : RecyclerView.Adapter<DateRecordAdapter.ViewHolder>() {
     inner class ViewHolder(view:View):RecyclerView.ViewHolder(view){
         val dateImage: ImageView = view.findViewById(R.id.shootingImage)
         val dateName: TextView = view.findViewById(R.id.shootingName)
@@ -30,12 +30,12 @@ class DateRecordAdapter(val dateList:List<DateRecord>) : RecyclerView.Adapter<Da
             parent.context.startActivity(intent)
 
         }
-        viewHolder.itemView.setOnLongClickListener {
-            val position = viewHolder.adapterPosition
-            val shootRecord = dateList[position]
-            Toast.makeText(parent.context, "You long click num ${position}", Toast.LENGTH_SHORT).show()
-            true
-        }
+//        viewHolder.itemView.setOnLongClickListener {
+//            val position = viewHolder.adapterPosition
+//            val shootRecord = dateList[position]
+//            Toast.makeText(parent.context, "You long click num ${position}", Toast.LENGTH_SHORT).show()
+//            true
+//        }
         return viewHolder
     }
 

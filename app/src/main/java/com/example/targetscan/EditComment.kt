@@ -28,8 +28,8 @@ class EditComment : AppCompatActivity() {
 
         binding.confirmBtn.setOnClickListener {
             comment = binding.commentInput.text.toString()
-            if (comment!!.length>250){
-                Toast.makeText(this, "Comment length exceeds 250 chars.", Toast.LENGTH_SHORT).show()
+            if (comment!!.length>150){
+                Toast.makeText(this, "Comment length exceeds 150 chars.", Toast.LENGTH_SHORT).show()
             }
             else{
                 val access = getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -64,8 +64,8 @@ class EditComment : AppCompatActivity() {
     @SuppressLint("Range")
     private fun showInfo(imgName:String){
         var str = ""
-        str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n\n"
-        str += "Date: ${imgName.slice(1..10)}\n\n"
+        str += "Discipline: ${disciplineList[imgName.slice(0..0).toInt()]}\n"
+        str += "Date: ${imgName.slice(1..10)}\n"
         str += "ID: ${imgName.slice(11..13)}"
         binding.disciplineText.text = str
 

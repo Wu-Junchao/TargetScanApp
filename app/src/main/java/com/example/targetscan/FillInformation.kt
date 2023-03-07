@@ -66,8 +66,8 @@ class FillInformation : AppCompatActivity() {
         var comment = intent.getStringExtra("comment")
         binding.commentInput.setText(comment)
 
-        supportActionBar?.title = "Entering information"
-        disciplineList = mutableListOf<String>("Rifle shoot")
+        supportActionBar?.title = "Enter Information"
+        disciplineList = mutableListOf<String>("Small-bore Rifle")
         initSpinner(index)
         initDateSelector(year,month-1,day)
 
@@ -77,8 +77,8 @@ class FillInformation : AppCompatActivity() {
             day = binding.dateInput.dayOfMonth
             comment = binding.commentInput.text.toString()
             removeEmptyPhoto()
-            if (comment!!.length>250){
-                Toast.makeText(this, "Comment length exceeds 250 chars.", Toast.LENGTH_SHORT).show()
+            if (comment!!.length>150){
+                Toast.makeText(this, "Comment length exceeds 150 chars.", Toast.LENGTH_SHORT).show()
             }
             else{
                 intent = Intent(this,TakePhoto2::class.java)
