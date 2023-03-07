@@ -57,7 +57,9 @@ class RecordDetail : AppCompatActivity() {
             val inputStream = contentResolver.openInputStream(imageUri)
             originalImg = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
-//            originalImg= rotateBitmap(originalImg,0)
+            if (originalImg.height>originalImg.width){
+                originalImg = rotateBitmap(originalImg,270)
+            }
             binding.imageDetail.setImageBitmap(originalImg)
 
         }

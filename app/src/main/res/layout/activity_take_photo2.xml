@@ -80,7 +80,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <Button
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Capture"
             android:textSize="13sp"
@@ -90,8 +90,8 @@
             android:textColor="@color/textColor"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/cancelPhotoBtn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/uploadBtn"/>
+            app:layout_constraintStart_toEndOf="@id/uploadBtn"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
             android:id="@+id/confirmPhotoBtn"
@@ -116,8 +116,8 @@
             android:id="@+id/uploadBtn"
             android:background="@drawable/button_style2"
             android:textColor="@color/textColor"
-            app:layout_constraintStart_toEndOf="@id/takePhotoBtn"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/takePhotoBtn"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/cancelPhotoBtn" />
 
