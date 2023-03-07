@@ -246,7 +246,8 @@ def main(content):
     coloredOriginalImage = resize2Width(SCALED_WIDTH,coloredOriginalImage)
     coloredOriginalImage = cv2.rotate(coloredOriginalImage,cv2.ROTATE_90_COUNTERCLOCKWISE)
     # Next block
-    img_binarized = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 199, 5)
+    img_binarized = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 99, 1)
+    img_binarized = cv2.medianBlur(img_binarized, 25)
     kernel = np.ones((5,5),np.uint8)
     img_closing = cv2.morphologyEx(255-img_binarized, cv2.MORPH_CLOSE, kernel)
     # Remove small contours
@@ -281,7 +282,7 @@ def main(content):
         radiusCollect = np.array(radiusCollect)
         q75, q25 = np.percentile(radiusCollect, [75 ,25])
         iqr = q75 - q25
-        iqr = max(iqr,2)
+        iqr = max(iqr,1)
         upperBound = q75+iqr*1.5
         lowerBound = q25-iqr*1.5
         # print(upperBound,lowerBound)
@@ -291,6 +292,9 @@ def main(content):
                 newDistanceCollect.append(distanceCollect[i])
         contoursFiltered=newContoursFiltered.copy()
         distanceCollect = newDistanceCollect.copy()
+        if len(contoursFiltered)>10:
+            contoursFiltered=contoursFiltered[:10]
+
 
         # print(distanceCollect)
         indexArray = getLocation(distanceCollect,height,width)
