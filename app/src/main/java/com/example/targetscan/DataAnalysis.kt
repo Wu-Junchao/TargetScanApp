@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.SeekBar
@@ -18,7 +17,7 @@ import me.moallemi.tools.daterange.localdate.rangeTo
 import java.time.LocalDate
 import java.util.Calendar
 
-class DataDisplay : AppCompatActivity() {
+class DataAnalysis : AppCompatActivity() {
     private lateinit var binding: ActivityDataDisplayBinding
     private var xDateAgo = 14
     private var isMonth = false

@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.targetscan.databinding.ActivityMainBinding
 
 import android.Manifest
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -23,7 +21,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class DaySelect : AppCompatActivity() {
     lateinit var binding:ActivityMainBinding
     private var dateRecord = ArrayList<DateRecord>()
     private var year = "2023"

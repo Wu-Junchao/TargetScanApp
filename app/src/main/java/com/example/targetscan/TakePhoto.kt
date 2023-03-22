@@ -28,13 +28,13 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.targetscan.MainActivity.Companion.REQUEST_CODE_PERMISSIONS
+import com.example.targetscan.DaySelect.Companion.REQUEST_CODE_PERMISSIONS
 import com.example.targetscan.databinding.ActivityTakePhoto2Binding
 import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class TakePhoto2 : AppCompatActivity() {
+class TakePhoto : AppCompatActivity() {
     lateinit var binding: ActivityTakePhoto2Binding
     lateinit var imageUri: Uri
     lateinit var outputImage: File

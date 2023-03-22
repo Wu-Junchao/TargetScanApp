@@ -81,7 +81,7 @@ class FillInformation : AppCompatActivity() {
                 Toast.makeText(this, "Comment length exceeds 150 chars.", Toast.LENGTH_SHORT).show()
             }
             else{
-                intent = Intent(this,TakePhoto2::class.java)
+                intent = Intent(this,TakePhoto::class.java)
                 intent.putExtra("index", selectedIndex)
                 intent.putExtra("year", year)
                 intent.putExtra("month", month)

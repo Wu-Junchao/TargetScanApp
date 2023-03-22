@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.content.SharedPreferences
@@ -37,7 +36,7 @@ class MonthSelect : AppCompatActivity() {
         binding = ActivityMonthSelectBinding.inflate(layoutInflater)
         val d = intent.getStringExtra("date")
         if (d.isNullOrEmpty()){
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,DaySelect::class.java)
             startActivity(intent)
             finish()
         }

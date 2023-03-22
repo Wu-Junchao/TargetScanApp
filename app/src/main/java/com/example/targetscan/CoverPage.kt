@@ -20,7 +20,7 @@ class CoverPage : AppCompatActivity() {
             startActivity(intent)
         }
         binding.recordBtn.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,DaySelect::class.java)
             startActivity(intent)
         }
         binding.settingBtn.setOnClickListener {
@@ -28,7 +28,7 @@ class CoverPage : AppCompatActivity() {
             startActivity(intent)
         }
         binding.analysisBtn.setOnClickListener {
-            val intent = Intent(this,DataDisplay::class.java)
+            val intent = Intent(this,DataAnalysis::class.java)
             startActivity(intent)
         }
     }

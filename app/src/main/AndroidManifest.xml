@@ -41,7 +41,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DataDisplay"
+            android:name=".DataAnalysis"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -80,7 +80,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".TakePhoto2"
+            android:name=".TakePhoto"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -101,7 +101,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".DaySelect"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"

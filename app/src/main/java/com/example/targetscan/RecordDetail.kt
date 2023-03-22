@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View.*
-import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
@@ -65,7 +64,7 @@ class RecordDetail : AppCompatActivity() {
         }
 
         else{
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,DaySelect::class.java)
             startActivity(intent)
             finish()
         }
