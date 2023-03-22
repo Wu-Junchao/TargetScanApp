@@ -3,11 +3,13 @@ package com.example.targetscan
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.targetscan.databinding.ActivityCoverPageBinding
 
 class CoverPage : AppCompatActivity() {
     lateinit var binding: ActivityCoverPageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = ActivityCoverPageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
