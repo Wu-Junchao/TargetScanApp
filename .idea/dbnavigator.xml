@@ -20,9 +20,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="6eb49779-5e0b-48d2-9de2-c950115a129b" object-ref="schemas/main/tables/ShootingRecords" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="6eb49779-5e0b-48d2-9de2-c950115a129b" dataset="main.ShootingRecords" active-filter-id="EMPTY_FILTER" />

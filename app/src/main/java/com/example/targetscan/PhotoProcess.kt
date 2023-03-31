@@ -380,6 +380,7 @@ class PhotoProcess : AppCompatActivity() {
             super.onPostExecute(result)
             timerTask.cancel(true)
             endTime = System.currentTimeMillis()
+//            binding.targetNumText.text= "Time used: "+((endTime-startTime)/1000).toString()
             Log.d("wu","Time used: "+((endTime-startTime)/1000).toString())
             working=false
             binding.imageProcessSeekBar.max=targetNum

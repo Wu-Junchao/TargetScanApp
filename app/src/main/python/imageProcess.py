@@ -310,7 +310,8 @@ def main(content):
             newContoursFiltered.append(contoursFiltered[i])
             center = (int(x),int(y))
             radius = int(radius)
-            cv2.circle(originalImgSmall,center,radius,(0,255,0),2)
+            # cv2.circle(coloredOriginalImage,center,radius,(0,255,0),2)
+            cv2.circle(coloredOriginalImage,(center[1],SCALED_WIDTH-center[0]),radius,(0,255,0),2)
             # labelling the circles around the centers, in no particular order.
             position = (center[0] - 10, center[1] + 10)
             text_color = (255, 255, 255)

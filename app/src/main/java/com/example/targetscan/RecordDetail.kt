@@ -64,7 +64,7 @@ class RecordDetail : AppCompatActivity() {
         }
 
         else{
-            val intent = Intent(this,DaySelect::class.java)
+            val intent = Intent(this,MonthSelect::class.java)
             startActivity(intent)
             finish()
         }

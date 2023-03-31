@@ -28,7 +28,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.targetscan.DaySelect.Companion.REQUEST_CODE_PERMISSIONS
+import com.example.targetscan.CoverPage.Companion.REQUEST_CODE_PERMISSIONS
 import com.example.targetscan.databinding.ActivityTakePhoto2Binding
 import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
@@ -147,7 +147,6 @@ class TakePhoto : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
                 Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

@@ -14,7 +14,8 @@
     <string name="graphDisplaySwitch1">Rendered</string>
     <string name="graphDisplaySwitch2">Original</string>
     <string name="full_target_paper">Full Target Paper</string>
-    <string name="photo_guide">Try to position your phone directly above the target paper to avoid distorted targets.\nTry to capture the targets as large as possible.</string>
+    <string name="photo_guide">Try to place your phone directly above the target paper to avoid image distortion, and capture the targets as large as possible.\nPlace the target paper on a light colour surface or a white paper to ensure bullet holes are distinguishable.</string>
     <string name="photo_guide2">The top side of your phone should correspond to the left side of the target paper (in landscape view).If the text is upside-down, rotate the paper.\nFlash light will be used to avoid shadow.</string>
+    <string name="photo_guide3">You should align the phone\'s long side with the paper\'s long side, and ensure the top side of the paper is on top of the screen.\nFlash light will be used to avoid shadow.</string>
     <string name="copyright">Designed by Junchao Wu\nVersion 1.0</string>
 </resources>

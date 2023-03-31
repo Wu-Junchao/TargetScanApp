@@ -37,7 +37,7 @@
         android:id="@+id/guideText"
         android:textSize="17sp"
         android:textColor="@color/textColor"
-        android:text="@string/photo_guide2"
+        android:text="@string/photo_guide3"
         android:layout_marginHorizontal="10dp"
         android:gravity="center_horizontal"
         android:layout_marginBottom="5dp"

@@ -25,7 +25,7 @@ class DateRecordAdapter(private val dateList:List<DateRecord>) : RecyclerView.Ad
             val position = viewHolder.adapterPosition
             val shootRecord = dateList[position]
             Toast.makeText(parent.context, "You click num ${position}", Toast.LENGTH_SHORT).show()
-            val intent = Intent(parent.context,MonthSelect::class.java)
+            val intent = Intent(parent.context,DaySelect::class.java)
             intent.putExtra("date",dateList[position].name)
             parent.context.startActivity(intent)
 
