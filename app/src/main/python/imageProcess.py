@@ -340,7 +340,7 @@ def main(content):
 
     i=1
     contourSize = len(contoursFiltered)
-    kernel = [np.ones((x,x),np.uint8) for x in (7,13,19,25)]
+    kernel = [np.ones((x,x),np.uint8) for x in (7,13,19,25,31)]
     scale_percent = SCALED_WIDTH/img.shape[1]
     global resultsCollection
     resultsCollection = []
@@ -362,7 +362,7 @@ def main(content):
         # print(cord_y-radius,cord_y+radius,cord_x-radius,cord_x+radius)
         numberOfContours=0
         kernelSwitch=0
-        while numberOfContours!=2 and kernelSwitch<=3:
+        while numberOfContours!=2 and kernelSwitch<=4:
             originImageCut = originalImg[cord_y-radius:cord_y+radius,cord_x-radius:cord_x+radius]
             maskedCenter=masked[cord_y-radius:cord_y+radius,cord_x-radius:cord_x+radius]
             maskedCenter=cv2.copyMakeBorder(maskedCenter, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, EXTRA_RADIUS, cv2.BORDER_REPLICATE)

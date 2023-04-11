@@ -87,7 +87,7 @@ class FillInformation : AppCompatActivity() {
                 intent.putExtra("month", month)
                 intent.putExtra("day", day)
                 intent.putExtra("comment",comment!!.trim())
-                Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "$year $month $day", Toast.LENGTH_SHORT).show()
                 startActivity(intent)
                 finish()
             }
